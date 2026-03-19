@@ -15,13 +15,12 @@
       --accent2: #f7c94f;
       --accent3: #4ff7a0;
       --danger: #f7614f;
+      --purple: #b47fff;
       --text: #e8eaf2;
       --text-sub: #8b8fa8;
       --radius: 12px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       background: var(--bg);
       color: var(--text);
@@ -41,73 +40,62 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
     }
-    header h1 {
-      font-size: 1.1em;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-    }
+    header h1 { font-size: 1.05em; font-weight: 700; }
     header h1 span { color: var(--accent); }
-
     .score-badge {
       background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 6px 16px;
+      padding: 5px 14px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9em;
+      font-size: 0.88em;
     }
     .score-badge b { color: var(--accent2); }
 
-    /* ── 레벨 선택 화면 ── */
+    /* ── 레벨 선택 ── */
     #level-screen {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 48px 24px;
+      padding: 48px 20px;
       gap: 24px;
       width: 100%;
-      max-width: 700px;
+      max-width: 680px;
     }
-    #level-screen h2 { font-size: 1.3em; color: var(--text-sub); font-weight: 400; }
-
-    .level-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      width: 100%;
-    }
+    #level-screen h2 { font-size: 1.2em; color: var(--text-sub); font-weight: 400; }
+    .level-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; width: 100%; }
     .level-card {
       background: var(--surface);
       border: 2px solid var(--border);
       border-radius: var(--radius);
-      padding: 28px 20px;
+      padding: 26px 16px;
       cursor: pointer;
-      transition: border-color .2s, transform .15s;
+      transition: border-color .18s, transform .14s;
       text-align: center;
     }
-    .level-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .level-card:hover { transform: translateY(-3px); }
     .level-card.lv1:hover { border-color: var(--accent3); }
     .level-card.lv2:hover { border-color: var(--accent2); }
     .level-card.lv3:hover { border-color: var(--danger); }
-    .level-card .lv-num { font-size: 2em; font-weight: 700; margin-bottom: 8px; }
+    .lv-num { font-size: 1.9em; font-weight: 700; margin-bottom: 6px; }
     .lv1 .lv-num { color: var(--accent3); }
     .lv2 .lv-num { color: var(--accent2); }
     .lv3 .lv-num { color: var(--danger); }
-    .level-card .lv-title { font-size: 0.95em; font-weight: 600; margin-bottom: 6px; }
-    .level-card .lv-desc { font-size: 0.78em; color: var(--text-sub); line-height: 1.5; }
+    .lv-title { font-size: 0.93em; font-weight: 600; margin-bottom: 5px; }
+    .lv-desc { font-size: 0.76em; color: var(--text-sub); line-height: 1.55; }
 
     /* ── 문제 화면 ── */
     #problem-screen {
       display: none;
       flex-direction: column;
       align-items: center;
-      padding: 28px 16px 48px;
-      gap: 20px;
+      padding: 24px 14px 60px;
+      gap: 18px;
       width: 100%;
-      max-width: 780px;
+      max-width: 760px;
     }
-
     .problem-header {
       width: 100%;
       display: flex;
@@ -115,149 +103,117 @@
       justify-content: space-between;
     }
     .level-tag {
-      font-size: 0.8em;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-weight: 600;
+      font-size: 0.78em; padding: 3px 11px;
+      border-radius: 20px; font-weight: 600;
     }
-    .lv1-tag { background: rgba(79,247,160,.12); color: var(--accent3); border: 1px solid var(--accent3); }
-    .lv2-tag { background: rgba(247,201,79,.12); color: var(--accent2); border: 1px solid var(--accent2); }
-    .lv3-tag { background: rgba(247,97,79,.12); color: var(--danger); border: 1px solid var(--danger); }
-
-    .back-btn {
-      background: none;
+    .lv1-tag { background:rgba(79,247,160,.12); color:var(--accent3); border:1px solid var(--accent3); }
+    .lv2-tag { background:rgba(247,201,79,.12); color:var(--accent2); border:1px solid var(--accent2); }
+    .lv3-tag { background:rgba(247,97,79,.12);  color:var(--danger);  border:1px solid var(--danger); }
+    .type-tag {
+      font-size: 0.74em; padding: 3px 10px;
+      border-radius: 20px; font-weight: 500;
+      background: var(--surface2); color: var(--text-sub);
       border: 1px solid var(--border);
-      color: var(--text-sub);
-      padding: 5px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.82em;
-      font-family: inherit;
+      margin-left: 8px;
+    }
+    .back-btn {
+      background: none; border: 1px solid var(--border);
+      color: var(--text-sub); padding: 4px 12px;
+      border-radius: 8px; cursor: pointer;
+      font-size: 0.8em; font-family: inherit;
     }
     .back-btn:hover { border-color: var(--accent); color: var(--accent); }
 
     /* ── 문제 카드 ── */
     .problem-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      width: 100%;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 22px; width: 100%;
     }
-    .problem-type-label {
-      font-size: 0.75em;
-      color: var(--text-sub);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
-    }
-    .problem-text {
-      font-size: 1em;
-      line-height: 1.7;
-      color: var(--text);
-    }
+    .problem-text { font-size: 0.97em; line-height: 1.75; }
+    .problem-text b { color: var(--accent2); }
 
     /* ── 캔버스 ── */
-    canvas {
+    .canvas-wrap {
+      width: 100%;
       background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      display: block;
-      max-width: 100%;
+      overflow: hidden;
     }
+    .canvas-wrap canvas { display: block; width: 100%; height: auto; }
 
-    /* ── 선택지 (레벨1용 그래프 스케치) ── */
+    /* ── 선택지 ── */
     .choices-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      width: 100%;
+      display: grid; grid-template-columns: repeat(2,1fr);
+      gap: 10px; width: 100%;
     }
     .choice-btn {
-      background: var(--surface);
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      padding: 12px;
-      cursor: pointer;
-      transition: border-color .2s;
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: var(--radius); padding: 10px;
+      cursor: pointer; transition: border-color .18s;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .choice-btn .choice-label {
+      font-size: 0.8em; color: var(--text-sub);
+      font-family: 'JetBrains Mono', monospace;
     }
     .choice-btn:hover { border-color: var(--accent); }
     .choice-btn.selected { border-color: var(--accent); background: rgba(79,142,247,.08); }
-    .choice-btn.correct { border-color: var(--accent3); background: rgba(79,247,160,.08); }
-    .choice-btn.wrong { border-color: var(--danger); background: rgba(247,97,79,.08); }
-    .choice-btn canvas { pointer-events: none; }
+    .choice-btn.correct  { border-color: var(--accent3); background: rgba(79,247,160,.08); }
+    .choice-btn.wrong    { border-color: var(--danger);  background: rgba(247,97,79,.08); }
+    .choice-btn canvas   { pointer-events: none; max-width: 100%; }
 
-    /* ── 입력 폼 ── */
+    /* ── 입력 ── */
     .input-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
-      width: 100%;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(195px,1fr));
+      gap: 11px; width: 100%;
     }
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .input-group label {
-      font-size: 0.82em;
-      color: var(--text-sub);
-    }
+    .input-group { display: flex; flex-direction: column; gap: 5px; }
+    .input-group label { font-size: 0.8em; color: var(--text-sub); }
     .input-group input {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text);
       font-family: 'JetBrains Mono', monospace;
-      font-size: 1em;
-      padding: 10px 14px;
-      outline: none;
-      transition: border-color .2s;
+      font-size: 1em; padding: 9px 13px; outline: none;
+      transition: border-color .18s;
     }
     .input-group input:focus { border-color: var(--accent); }
-    .input-group input.correct-input { border-color: var(--accent3); }
-    .input-group input.wrong-input { border-color: var(--danger); }
+    .input-group input.ok  { border-color: var(--accent3); }
+    .input-group input.bad { border-color: var(--danger); }
 
     /* ── 버튼 ── */
-    .btn-row {
-      display: flex;
-      gap: 12px;
-      width: 100%;
-    }
+    .btn-row { display: flex; gap: 10px; width: 100%; }
     .btn {
-      flex: 1;
-      padding: 13px;
-      border-radius: var(--radius);
-      border: none;
-      font-family: 'Noto Sans KR', sans-serif;
-      font-size: 0.95em;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity .15s, transform .1s;
+      flex: 1; padding: 12px; border-radius: var(--radius);
+      border: none; font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.93em; font-weight: 600; cursor: pointer;
+      transition: opacity .14s, transform .1s;
     }
     .btn:active { transform: scale(.98); }
-    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary   { background: var(--accent); color: #fff; }
     .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-    .btn:disabled { opacity: .4; cursor: not-allowed; }
+    .btn:disabled  { opacity: .38; cursor: not-allowed; }
 
-    /* ── 결과 메시지 ── */
+    /* ── 메시지 ── */
     #message {
-      font-size: 0.95em;
-      padding: 12px 18px;
-      border-radius: 10px;
-      width: 100%;
-      display: none;
+      font-size: 0.92em; padding: 11px 16px;
+      border-radius: 10px; width: 100%; display: none;
+      line-height: 1.6;
     }
-    #message.correct { background: rgba(79,247,160,.1); border: 1px solid var(--accent3); color: var(--accent3); }
-    #message.wrong { background: rgba(247,97,79,.1); border: 1px solid var(--danger); color: var(--danger); }
+    #message.correct { background:rgba(79,247,160,.1); border:1px solid var(--accent3); color:var(--accent3); }
+    #message.wrong   { background:rgba(247,97,79,.1);  border:1px solid var(--danger);  color:var(--danger); }
 
-    /* ── 크레딧 ── */
+    /* ── 진행 표시 ── */
+    .progress-row {
+      width: 100%; display: flex; align-items: center; gap: 10px;
+      font-size: 0.78em; color: var(--text-sub);
+    }
+    .progress-bar { flex: 1; height: 4px; background: var(--border); border-radius: 2px; }
+    .progress-fill { height: 100%; border-radius: 2px; background: var(--accent); transition: width .3s; }
+
     footer {
-      position: fixed;
-      bottom: 10px;
-      right: 14px;
-      font-size: 0.8em;
-      color: var(--text-sub);
+      position: fixed; bottom: 10px; right: 14px;
+      font-size: 0.78em; color: var(--text-sub);
     }
   </style>
 </head>
@@ -268,24 +224,24 @@
   <div class="score-badge">점수: <b id="score-display">0</b></div>
 </header>
 
-<!-- 레벨 선택 화면 -->
+<!-- 레벨 선택 -->
 <div id="level-screen">
   <h2>난이도를 선택하세요</h2>
   <div class="level-cards">
     <div class="level-card lv1" onclick="startLevel(1)">
       <div class="lv-num">Lv.1</div>
-      <div class="lv-title">그래프 읽기</div>
-      <div class="lv-desc">주어진 운동 상황에 맞는<br>v-t 그래프를 선택하세요</div>
+      <div class="lv-title">그래프 고르기</div>
+      <div class="lv-desc">운동 상황에 맞는<br>v-t 그래프를 선택</div>
     </div>
     <div class="level-card lv2" onclick="startLevel(2)">
       <div class="lv-num">Lv.2</div>
       <div class="lv-title">값 계산하기</div>
-      <div class="lv-desc">v-t / a-t 그래프를 보고<br>속도·변위·평균속도를 구하세요</div>
+      <div class="lv-desc">v-t · a-t 그래프에서<br>속도·변위·평균속도 계산</div>
     </div>
     <div class="level-card lv3" onclick="startLevel(3)">
       <div class="lv-num">Lv.3</div>
       <div class="lv-title">종합 분석</div>
-      <div class="lv-desc">정지 시각·방향 전환 등<br>복합 조건을 분석하세요</div>
+      <div class="lv-desc">두 물체 비교·방향전환<br>복합 분석 문제</div>
     </div>
   </div>
 </div>
@@ -293,46 +249,55 @@
 <!-- 문제 화면 -->
 <div id="problem-screen">
   <div class="problem-header">
-    <span id="level-tag" class="level-tag lv1-tag">Lv.1</span>
+    <div>
+      <span id="level-tag" class="level-tag lv1-tag">Lv.1</span>
+      <span id="type-tag" class="type-tag"></span>
+    </div>
     <button class="back-btn" onclick="goToLevelSelect()">← 레벨 선택</button>
   </div>
 
+  <div class="progress-row">
+    <span id="prob-count">1번째 문제</span>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <span id="prob-streak">연속정답: 0</span>
+  </div>
+
   <div class="problem-card">
-    <div class="problem-type-label" id="problem-type-label">그래프 스케치</div>
     <p class="problem-text" id="problem-text"></p>
   </div>
 
-  <!-- 메인 그래프 캔버스 (레벨2,3용) -->
-  <canvas id="main-canvas" width="560" height="280" style="display:none;"></canvas>
+  <div class="canvas-wrap" id="canvas-wrap" style="display:none;">
+    <canvas id="main-canvas" width="680" height="300"></canvas>
+  </div>
 
-  <!-- 선택지 (레벨1용) -->
   <div class="choices-grid" id="choices-area" style="display:none;"></div>
-
-  <!-- 숫자 입력 (레벨2,3용) -->
-  <div class="input-grid" id="input-area" style="display:none;"></div>
+  <div class="input-grid"   id="input-area"   style="display:none;"></div>
 
   <div id="message"></div>
 
   <div class="btn-row">
-    <button class="btn btn-primary" id="check-btn" onclick="checkAnswer()">정답 확인</button>
-    <button class="btn btn-secondary" id="next-btn" onclick="nextProblem()" disabled>다음 문제 →</button>
+    <button class="btn btn-primary"   id="check-btn" onclick="checkAnswer()">정답 확인</button>
+    <button class="btn btn-secondary" id="next-btn"  onclick="nextProblem()" disabled>다음 문제 →</button>
   </div>
 </div>
 
 <footer>조준현T</footer>
 
 <script>
-// ─────────────────────────────────────────────
-// 상태
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════
+//  전역 상태
+// ═══════════════════════════════════════════
 let level = 1;
 let score = 0;
-let currentProblem = {};
+let probNum = 0;
+let streak = 0;
+let typeIndex = 0;   // 유형 순환용
+let cur = {};        // 현재 문제 데이터
 let answered = false;
 
-// ─────────────────────────────────────────────
-// 화면 전환
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════
+//  화면 전환
+// ═══════════════════════════════════════════
 function goToLevelSelect() {
   document.getElementById('level-screen').style.display = 'flex';
   document.getElementById('problem-screen').style.display = 'none';
@@ -340,73 +305,135 @@ function goToLevelSelect() {
 
 function startLevel(lv) {
   level = lv;
+  probNum = 0; typeIndex = 0;
   document.getElementById('level-screen').style.display = 'none';
   document.getElementById('problem-screen').style.display = 'flex';
-
   const tag = document.getElementById('level-tag');
   tag.textContent = `Lv.${lv}`;
   tag.className = `level-tag lv${lv}-tag`;
-
-  answered = false;
   generateProblem();
 }
 
-// ─────────────────────────────────────────────
-// 문제 생성 라우터
-// ─────────────────────────────────────────────
+// ═══════════════════════════════════════════
+//  문제 생성 라우터
+// ═══════════════════════════════════════════
 function generateProblem() {
   answered = false;
+  probNum++;
   document.getElementById('check-btn').disabled = false;
   document.getElementById('next-btn').disabled = true;
-  hideMessage();
+  document.getElementById('prob-count').textContent = `${probNum}번째 문제`;
+  document.getElementById('prob-streak').textContent = `연속정답: ${streak}`;
+  const pct = Math.min(streak * 10, 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  hideMsg();
+  resetInputs();
 
-  if (level === 1) generateLevel1();
-  else if (level === 2) generateLevel2();
-  else generateLevel3();
+  if      (level === 1) genLv1();
+  else if (level === 2) genLv2();
+  else                  genLv3();
 }
 
-// ─────────────────────────────────────────────
-// 레벨 1 : 운동 상황 → v-t 그래프 선택
-// ─────────────────────────────────────────────
-/*
-  운동 상황 유형 pool
-  type A: 양(+)방향 등가속도 (v0=0에서 출발)
-  type B: 양(+)방향 등속도
-  type C: 양(+)방향이다가 감속 → 정지
-  type D: 음(-)방향 등가속도 (역방향 출발)
+// ═══════════════════════════════════════════
+//  LV1 : 운동 상황 설명 → v-t 그래프 4지선다
+//  완전 랜덤 v0·a, 정수 조건 필터
+// ═══════════════════════════════════════════
+/*  그래프 유형 6종
+    'pos_acc'  : v0≥0, a>0  (양방향 가속)
+    'pos_con'  : a=0, v0>0  (등속)
+    'pos_dec'  : v0>0, a<0, 정지 후 고정 (감속→정지)
+    'dir_rev'  : v0>0, a<0, 정지 후 역방향 (방향전환)
+    'neg_acc'  : v0<0, a<0  (음방향 가속)
+    'neg_start': v0<0, a>0  (음에서 출발 → 0으로 수렴 또는 양전환)
 */
-function generateLevel1() {
-  document.getElementById('main-canvas').style.display = 'none';
+const LV1_TYPES = ['pos_acc','pos_con','pos_dec','dir_rev','neg_acc','neg_start'];
+
+const LV1_DESC = {
+  pos_acc:   (p) => `물체가 ${p.v0 === 0 ? '정지 상태에서 출발하여' : `초속도 ${p.v0} m/s로 출발하여`} 가속도 ${p.a} m/s²로 등가속도 운동을 한다.`,
+  pos_con:   (p) => `물체가 ${p.v0} m/s의 일정한 속도로 등속 운동을 한다.`,
+  pos_dec:   (p) => `물체가 초속도 ${p.v0} m/s로 출발하여 ${p.tStop}초 후 정지한다. (가속도 ${p.a} m/s²)`,
+  dir_rev:   (p) => `물체가 초속도 ${p.v0} m/s로 출발하여 ${p.tStop}초 후 운동 방향이 바뀐다. (가속도 ${p.a} m/s²)`,
+  neg_acc:   (p) => `물체가 음(−)의 방향으로 초속도 ${Math.abs(p.v0)} m/s로 출발하여 가속도 ${p.a} m/s²로 더 빨라진다.`,
+  neg_start: (p) => `물체가 음(−)의 방향으로 초속도 ${Math.abs(p.v0)} m/s로 출발하여 양(+)의 가속도 ${p.a} m/s²를 받아 점점 느려진다.`,
+};
+
+function randInt(min, max) { return Math.floor(Math.random()*(max-min+1))+min; }
+
+function genLv1Params(type) {
+  // 정수 조건 만족하는 파라미터 생성
+  for (let tries = 0; tries < 200; tries++) {
+    let v0, a, tStop;
+    if (type === 'pos_acc') {
+      v0 = randInt(0, 6)*2;   // 0,2,4,6,8,10,12
+      a  = randInt(1, 5)*2;   // 2,4,6,8,10
+      return { v0, a };
+    }
+    if (type === 'pos_con') {
+      v0 = randInt(1, 8)*2;
+      return { v0, a: 0 };
+    }
+    if (type === 'pos_dec') {
+      v0 = randInt(2, 8)*2;
+      a  = -randInt(1, v0/2);
+      tStop = -v0 / a;
+      if (tStop % 1 === 0 && tStop >= 2) return { v0, a, tStop };
+    }
+    if (type === 'dir_rev') {
+      v0 = randInt(2, 8)*2;
+      a  = -randInt(1, v0/2);
+      tStop = -v0 / a;
+      if (tStop % 1 === 0 && tStop >= 2 && tStop <= 5) return { v0, a, tStop };
+    }
+    if (type === 'neg_acc') {
+      v0 = -randInt(1, 6)*2;
+      a  = -randInt(1, 4)*2;
+      return { v0, a };
+    }
+    if (type === 'neg_start') {
+      v0 = -randInt(2, 8)*2;
+      a  = randInt(1, Math.abs(v0)/2);
+      return { v0, a };
+    }
+  }
+  return null;
+}
+
+function genLv1() {
+  showCanvas(false);
   document.getElementById('input-area').style.display = 'none';
   document.getElementById('choices-area').style.display = 'grid';
-  document.getElementById('problem-type-label').textContent = '그래프 스케치 선택';
+  document.getElementById('type-tag').textContent = 'v-t 그래프 선택';
 
-  const types = ['A','B','C','D'];
-  const correctType = types[Math.floor(Math.random() * types.length)];
+  // 정답 유형 랜덤 선택
+  const correctType = LV1_TYPES[Math.floor(Math.random() * LV1_TYPES.length)];
+  const params = genLv1Params(correctType);
 
-  const descriptions = {
-    A: '물체가 정지 상태에서 출발하여 일정한 가속도로 속력이 증가하며 운동한다.',
-    B: '물체가 일정한 속도로 등속 운동을 한다.',
-    C: '물체가 양(+)의 초속도를 가지고 출발한 후, 일정하게 감속하여 정지한다.',
-    D: '물체가 음(−)의 초속도를 가지고 출발하여 속력이 일정하게 증가한다. (반대 방향 이동)',
-  };
+  // 오답 유형 3개 (정답 제외, 비복원)
+  const wrongPool = LV1_TYPES.filter(t => t !== correctType);
+  shuffle(wrongPool);
+  const fourTypes = [correctType, ...wrongPool.slice(0,3)];
+  shuffle(fourTypes);
 
-  document.getElementById('problem-text').textContent =
-    `다음 운동 상황에 해당하는 v-t 그래프를 고르시오.\n\n"${descriptions[correctType]}"`;
+  cur = { correctType, params, fourTypes };
 
-  // 선택지 배열: 정답 포함, 순서 섞기
-  const shuffled = [...types].sort(() => Math.random() - .5);
-  currentProblem = { correctType, shuffled };
+  document.getElementById('problem-text').innerHTML =
+    `다음 운동 상황에 해당하는 <b>v-t 그래프</b>를 고르시오.<br><br>` +
+    `"${LV1_DESC[correctType](params)}"`;
 
+  // 선택지 렌더링
   const area = document.getElementById('choices-area');
   area.innerHTML = '';
-  shuffled.forEach((t, i) => {
+  fourTypes.forEach((t, i) => {
     const btn = document.createElement('div');
     btn.className = 'choice-btn';
     btn.dataset.type = t;
+    const label = document.createElement('div');
+    label.className = 'choice-label';
+    label.textContent = `(${['ㄱ','ㄴ','ㄷ','ㄹ'][i]})`;
     const cvs = document.createElement('canvas');
-    cvs.width = 240; cvs.height = 150;
-    drawChoiceGraph(cvs, t);
+    cvs.width = 260; cvs.height = 160;
+    drawSmallVT(cvs, t, genLv1Params(t) || {v0:4,a:2});
+    btn.appendChild(label);
     btn.appendChild(cvs);
     btn.onclick = () => selectChoice(btn);
     area.appendChild(btn);
@@ -417,118 +444,238 @@ function selectChoice(el) {
   if (answered) return;
   document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
-  currentProblem.userChoice = el.dataset.type;
+  cur.userChoice = el.dataset.type;
 }
 
-// ─────────────────────────────────────────────
-// 레벨 2 : v-t or a-t 그래프 → 값 계산
-// ─────────────────────────────────────────────
-function generateLevel2() {
-  document.getElementById('choices-area').style.display = 'none';
-  document.getElementById('main-canvas').style.display = 'block';
-  document.getElementById('input-area').style.display = 'grid';
-  document.getElementById('problem-type-label').textContent = '그래프 읽고 계산하기';
+// ═══════════════════════════════════════════
+//  LV2 : 유형 순환 (3종)
+//   0: v-t 양방향 가속 → 속도·변위·평균속도
+//   1: a-t 그래프 → v0 주어지고 v·변위 유추
+//   2: v-t 방향전환 → 정지시각·변위·총이동거리
+// ═══════════════════════════════════════════
+const LV2_TYPES = ['vt_pos','at_graph','vt_neg'];
+const LV2_NAMES = ['v-t (양방향)', 'a-t → 유추', 'v-t (방향전환)'];
 
-  // 정수 조건 만족하는 난수 생성
-  let v0, a, tEnd, tQuery, vAtQuery, disp, avgV;
-  do {
-    v0 = Math.floor(Math.random() * 10) * 2;       // 0~18 짝수
-    a  = (Math.floor(Math.random() * 5) + 1) * 2;  // 2~10 짝수
-    tEnd = Math.floor(Math.random() * 3) + 4;       // 4~6 s
-    tQuery = Math.floor(Math.random() * (tEnd - 1)) + 1;
-    vAtQuery = v0 + a * tQuery;
-    disp = v0 * tEnd + 0.5 * a * tEnd * tEnd;
+function genLv2() {
+  showCanvas(true);
+  document.getElementById('choices-area').style.display = 'none';
+  document.getElementById('input-area').style.display = 'grid';
+
+  const subtype = LV2_TYPES[typeIndex % LV2_TYPES.length];
+  document.getElementById('type-tag').textContent = LV2_NAMES[typeIndex % LV2_TYPES.length];
+  typeIndex++;
+
+  if (subtype === 'vt_pos') genLv2_vtPos();
+  else if (subtype === 'at_graph') genLv2_at();
+  else genLv2_vtNeg();
+}
+
+function genLv2_vtPos() {
+  // v0≥0, a>0, 정수 조건
+  let v0, a, tEnd, tQ, vQ, disp, avgV;
+  for (let i=0;i<500;i++) {
+    v0   = randInt(0,5)*2;
+    a    = randInt(1,4)*2;
+    tEnd = randInt(3,6);
+    tQ   = randInt(1, tEnd-1);
+    vQ   = v0 + a*tQ;
+    disp = v0*tEnd + 0.5*a*tEnd*tEnd;
     avgV = disp / tEnd;
-  } while (avgV % 1 !== 0 || disp % 1 !== 0);
-
-  currentProblem = { v0, a, tEnd, tQuery, vAtQuery, disp, avgV, graphType: 'vt' };
-
-  document.getElementById('problem-text').innerHTML =
-    `아래 <b>v-t 그래프</b>를 보고 물음에 답하시오.<br>
-     (초기 속도 ${v0} m/s, 등가속도 운동)`;
-
-  drawMainGraph();
-
-  const inputArea = document.getElementById('input-area');
-  inputArea.innerHTML = `
-    <div class="input-group">
-      <label>${tQuery}초 후 속도 (m/s)</label>
-      <input type="number" id="inp-v" placeholder="정수 입력">
-    </div>
-    <div class="input-group">
-      <label>${tEnd}초 동안 이동 변위 (m)</label>
-      <input type="number" id="inp-d" placeholder="정수 입력">
-    </div>
-    <div class="input-group">
-      <label>${tEnd}초 동안 평균 속도 (m/s)</label>
-      <input type="number" id="inp-avg" placeholder="정수 입력">
-    </div>
-  `;
-}
-
-// ─────────────────────────────────────────────
-// 레벨 3 : 방향 전환·정지 포함 종합 분석
-// ─────────────────────────────────────────────
-function generateLevel3() {
-  document.getElementById('choices-area').style.display = 'none';
-  document.getElementById('main-canvas').style.display = 'block';
-  document.getElementById('input-area').style.display = 'grid';
-  document.getElementById('problem-type-label').textContent = '종합 분석';
-
-  // v0 > 0, a < 0 → 방향전환 발생
-  let v0, a, tStop, tEnd, dispTotal, dispNet, tQuery;
-  do {
-    v0 = (Math.floor(Math.random() * 4) + 2) * 4;  // 8,12,16,20
-    a  = -Math.floor(Math.random() * 3) - 2;         // -2,-3,-4
-    tStop = -v0 / a;                                 // 정지 시각
-    tEnd  = tStop + Math.floor(Math.random() * 2) + 2; // 정지 이후 추가 시간
-    tQuery = Math.floor(tStop) + 1;
-    dispNet = v0 * tEnd + 0.5 * a * tEnd * tEnd;
-    dispTotal = (v0 * tStop + 0.5 * a * tStop * tStop) * 2 + Math.abs(dispNet - (v0*tStop + 0.5*a*tStop*tStop));
-  } while (
-    tStop % 1 !== 0 ||
-    tEnd % 1 !== 0 ||
-    dispNet % 1 !== 0
-  );
-
-  // tQuery에서의 속도
-  const vQuery = v0 + a * tQuery;
-  const dispUpToQuery = v0 * tQuery + 0.5 * a * tQuery * tQuery;
-
-  currentProblem = { v0, a, tStop, tEnd, tQuery, vQuery, dispNet, dispTotal: Math.abs(v0*tStop+0.5*a*tStop*tStop)*2 + Math.abs(dispNet), graphType: 'vt3' };
-
-  // 실제 총 이동거리
-  const dForward = v0 * tStop + 0.5 * a * tStop * tStop; // 정지까지 변위
-  const dNet = v0 * tEnd + 0.5 * a * tEnd * tEnd;
-  currentProblem.dForward = dForward;
-  currentProblem.dNet = dNet;
-  currentProblem.totalDist = dForward + Math.abs(dNet - dForward);
+    if (disp%1===0 && avgV%1===0) break;
+  }
+  cur = { subtype:'vt_pos', v0, a, tEnd, tQ, vQ, disp, avgV };
 
   document.getElementById('problem-text').innerHTML =
     `아래 <b>v-t 그래프</b>를 보고 물음에 답하시오.`;
 
-  drawMainGraph();
-
-  const inputArea = document.getElementById('input-area');
-  inputArea.innerHTML = `
+  drawMainVT(v0, a, tEnd, false);
+  document.getElementById('input-area').innerHTML = `
     <div class="input-group">
-      <label>물체가 정지하는 시각 (s)</label>
-      <input type="number" id="inp-tstop" placeholder="정수 입력">
+      <label>${tQ}초일 때 속도 (m/s)</label>
+      <input type="number" id="i0" placeholder="정수">
     </div>
     <div class="input-group">
-      <label>${tEnd}초 후 변위 (m)</label>
-      <input type="number" id="inp-dnet" placeholder="정수·부호 포함">
+      <label>0~${tEnd}초 동안 변위 (m)</label>
+      <input type="number" id="i1" placeholder="정수">
     </div>
     <div class="input-group">
-      <label>${tEnd}초 동안 총 이동 거리 (m)</label>
-      <input type="number" id="inp-dtot" placeholder="정수 입력">
-    </div>
-  `;
+      <label>0~${tEnd}초 평균 속도 (m/s)</label>
+      <input type="number" id="i2" placeholder="정수">
+    </div>`;
 }
 
-// ─────────────────────────────────────────────
-// 정답 확인
-// ─────────────────────────────────────────────
+function genLv2_at() {
+  // a-t 그래프: 일정한 가속도 a, 초속도 v0
+  let v0, a, tEnd, tQ, vQ, disp;
+  for (let i=0;i<500;i++) {
+    v0   = randInt(0,6)*2;
+    a    = randInt(1,5)*2;
+    tEnd = randInt(3,6);
+    tQ   = randInt(1,tEnd-1);
+    vQ   = v0 + a*tQ;
+    disp = v0*tEnd + 0.5*a*tEnd*tEnd;
+    if (disp%1===0 && vQ%1===0) break;
+  }
+  cur = { subtype:'at_graph', v0, a, tEnd, tQ, vQ, disp };
+
+  document.getElementById('problem-text').innerHTML =
+    `초속도 <b>${v0} m/s</b>인 물체의 <b>a-t 그래프</b>가 아래와 같다.<br>물음에 답하시오.`;
+
+  drawMainAT(a, tEnd);
+  document.getElementById('input-area').innerHTML = `
+    <div class="input-group">
+      <label>${tQ}초일 때 속도 (m/s)</label>
+      <input type="number" id="i0" placeholder="정수">
+    </div>
+    <div class="input-group">
+      <label>0~${tEnd}초 동안 변위 (m)</label>
+      <input type="number" id="i1" placeholder="정수">
+    </div>`;
+}
+
+function genLv2_vtNeg() {
+  // v0>0, a<0, 방향전환
+  let v0, a, tStop, tEnd, dFwd, dNet;
+  for (let i=0;i<500;i++) {
+    v0    = randInt(2,8)*2;
+    a     = -randInt(1, v0/2);
+    tStop = -v0/a;
+    tEnd  = tStop + randInt(1,3);
+    dFwd  = v0*tStop + 0.5*a*tStop*tStop;
+    dNet  = v0*tEnd  + 0.5*a*tEnd*tEnd;
+    if (tStop%1===0 && tEnd%1===0 && dFwd%1===0 && dNet%1===0) break;
+  }
+  const totalDist = dFwd + Math.abs(dNet - dFwd);
+  cur = { subtype:'vt_neg', v0, a, tStop, tEnd, dFwd, dNet, totalDist };
+
+  document.getElementById('problem-text').innerHTML =
+    `아래 <b>v-t 그래프</b>를 보고 물음에 답하시오. (방향 전환 포함)`;
+
+  drawMainVT(v0, a, tEnd, true);
+  document.getElementById('input-area').innerHTML = `
+    <div class="input-group">
+      <label>운동 방향이 바뀌는 시각 (s)</label>
+      <input type="number" id="i0" placeholder="정수">
+    </div>
+    <div class="input-group">
+      <label>0~${tEnd}초 동안 변위 (m, 부호 포함)</label>
+      <input type="number" id="i1" placeholder="정수">
+    </div>
+    <div class="input-group">
+      <label>0~${tEnd}초 동안 총 이동 거리 (m)</label>
+      <input type="number" id="i2" placeholder="정수">
+    </div>`;
+}
+
+// ═══════════════════════════════════════════
+//  LV3 : 유형 순환 (2종)
+//   0: 두 물체 v-t 비교
+//   1: 방향전환 + 위치 종합
+// ═══════════════════════════════════════════
+const LV3_TYPES = ['two_obj','complex'];
+const LV3_NAMES = ['두 물체 비교', '종합 분석'];
+
+function genLv3() {
+  showCanvas(true);
+  document.getElementById('choices-area').style.display = 'none';
+  document.getElementById('input-area').style.display = 'grid';
+
+  const subtype = LV3_TYPES[typeIndex % LV3_TYPES.length];
+  document.getElementById('type-tag').textContent = LV3_NAMES[typeIndex % LV3_TYPES.length];
+  typeIndex++;
+
+  if (subtype === 'two_obj') genLv3_two();
+  else genLv3_complex();
+}
+
+function genLv3_two() {
+  // A: v0a>0, a_a>0 / B: v0b>0, a_b (다름)
+  let v0a, aa, v0b, ab, tEnd, tMeet;
+  for (let i=0;i<1000;i++) {
+    v0a  = randInt(1,5)*2;
+    aa   = randInt(1,3)*2;
+    v0b  = randInt(1,4)*2;
+    ab   = randInt(1,3)*2;
+    if (v0a===v0b && aa===ab) continue;  // 완전 같은 건 제외
+    tEnd = randInt(3,6);
+    // t초 후 속도 / 변위 모두 정수
+    const va_t = v0a + aa*tEnd;
+    const vb_t = v0b + ab*tEnd;
+    const da   = v0a*tEnd + 0.5*aa*tEnd*tEnd;
+    const db   = v0b*tEnd + 0.5*ab*tEnd*tEnd;
+    if (va_t%1===0 && vb_t%1===0 && da%1===0 && db%1===0) {
+      cur = { subtype:'two_obj', v0a, aa, v0b, ab, tEnd,
+              va_t, vb_t, da, db, diffD: Math.abs(da-db) };
+      break;
+    }
+  }
+
+  document.getElementById('problem-text').innerHTML =
+    `두 물체 A, B의 <b>v-t 그래프</b>가 아래와 같다.<br>물음에 답하시오.`;
+
+  drawMainTwoObj(cur.v0a, cur.aa, cur.v0b, cur.ab, cur.tEnd);
+  document.getElementById('input-area').innerHTML = `
+    <div class="input-group">
+      <label>${tEnd}초일 때 A의 속도 (m/s)</label>
+      <input type="number" id="i0" placeholder="정수">
+    </div>
+    <div class="input-group">
+      <label>${tEnd}초일 때 B의 속도 (m/s)</label>
+      <input type="number" id="i1" placeholder="정수">
+    </div>
+    <div class="input-group">
+      <label>0~${tEnd}초 A의 변위 (m)</label>
+      <input type="number" id="i2" placeholder="정수">
+    </div>
+    <div class="input-group">
+      <label>0~${tEnd}초 B의 변위 (m)</label>
+      <input type="number" id="i3" placeholder="정수">
+    </div>`;
+}
+
+function genLv3_complex() {
+  // v0>0, a<0, 방향전환 + 특정 시각 위치
+  let v0, a, tStop, tEnd, dFwd, dNet, tQ, xQ;
+  for (let i=0;i<500;i++) {
+    v0    = randInt(3,8)*2;
+    a     = -randInt(1, v0/2);
+    tStop = -v0/a;
+    tEnd  = tStop + randInt(2,4);
+    tQ    = tStop + 1;
+    dFwd  = v0*tStop + 0.5*a*tStop*tStop;
+    dNet  = v0*tEnd  + 0.5*a*tEnd*tEnd;
+    xQ    = v0*tQ    + 0.5*a*tQ*tQ;
+    if (tStop%1===0 && tEnd%1===0 && dFwd%1===0 && dNet%1===0 && xQ%1===0) break;
+  }
+  const totalDist = dFwd + Math.abs(dNet - dFwd);
+  cur = { subtype:'complex', v0, a, tStop, tEnd, tQ, dFwd, dNet, xQ, totalDist };
+
+  document.getElementById('problem-text').innerHTML =
+    `아래 <b>v-t 그래프</b>를 보고 물음에 답하시오. (방향 전환 포함)`;
+
+  drawMainVT(v0, a, tEnd, true);
+  document.getElementById('input-area').innerHTML = `
+    <div class="input-group">
+      <label>운동 방향이 바뀌는 시각 (s)</label>
+      <input type="number" id="i0" placeholder="정수">
+    </div>
+    <div class="input-group">
+      <label>${tQ}초일 때 출발점으로부터 변위 (m, 부호)</label>
+      <input type="number" id="i1" placeholder="정수">
+    </div>
+    <div class="input-group">
+      <label>0~${tEnd}초 동안 총 이동 거리 (m)</label>
+      <input type="number" id="i2" placeholder="정수">
+    </div>
+    <div class="input-group">
+      <label>0~${tEnd}초 동안 변위 (m, 부호 포함)</label>
+      <input type="number" id="i3" placeholder="정수">
+    </div>`;
+}
+
+// ═══════════════════════════════════════════
+//  정답 확인
+// ═══════════════════════════════════════════
 function checkAnswer() {
   if (answered) return;
   answered = true;
@@ -536,261 +683,382 @@ function checkAnswer() {
   document.getElementById('next-btn').disabled = false;
 
   let correct = false;
+  let msg = '';
 
   if (level === 1) {
-    const chosen = currentProblem.userChoice;
-    if (!chosen) { answered = false; document.getElementById('check-btn').disabled = false; showMessage('wrong','선택지를 먼저 선택해주세요.'); return; }
-    correct = chosen === currentProblem.correctType;
-    // 시각적 피드백
+    const chosen = cur.userChoice;
+    if (!chosen) {
+      answered = false;
+      document.getElementById('check-btn').disabled = false;
+      showMsg('wrong','선택지를 먼저 선택해주세요.');
+      return;
+    }
+    correct = chosen === cur.correctType;
     document.querySelectorAll('.choice-btn').forEach(b => {
-      if (b.dataset.type === currentProblem.correctType) b.classList.add('correct');
+      if (b.dataset.type === cur.correctType) b.classList.add('correct');
       else if (b.dataset.type === chosen && !correct) b.classList.add('wrong');
     });
+    if (!correct) msg = `정답: ${['ㄱ','ㄴ','ㄷ','ㄹ'][cur.fourTypes.indexOf(cur.correctType)]}번`;
 
   } else if (level === 2) {
-    const userV   = parseInt(document.getElementById('inp-v').value);
-    const userD   = parseInt(document.getElementById('inp-d').value);
-    const userAvg = parseInt(document.getElementById('inp-avg').value);
-    const { vAtQuery, disp, avgV } = currentProblem;
-    const allOk = userV === vAtQuery && userD === disp && userAvg === avgV;
-    correct = allOk;
-    markInput('inp-v',   userV   === vAtQuery);
-    markInput('inp-d',   userD   === disp);
-    markInput('inp-avg', userAvg === avgV);
-    if (!correct) showMessage('wrong',
-      `오답. 정답: ${currentProblem.tQuery}초 후 속도=${vAtQuery}m/s, 변위=${disp}m, 평균속도=${avgV}m/s`);
+    const st = cur.subtype;
+    if (st === 'vt_pos') {
+      const [u0,u1,u2] = getInputs(3);
+      const ok = [u0===cur.vQ, u1===cur.disp, u2===cur.avgV];
+      correct = ok.every(Boolean);
+      markInputs(ok);
+      if (!correct) msg = `정답: ${cur.tQ}초 속도=${cur.vQ}m/s, 변위=${cur.disp}m, 평균속도=${cur.avgV}m/s`;
+    } else if (st === 'at_graph') {
+      const [u0,u1] = getInputs(2);
+      const ok = [u0===cur.vQ, u1===cur.disp];
+      correct = ok.every(Boolean);
+      markInputs(ok);
+      if (!correct) msg = `정답: ${cur.tQ}초 속도=${cur.vQ}m/s, 변위=${cur.disp}m`;
+    } else { // vt_neg
+      const [u0,u1,u2] = getInputs(3);
+      const ok = [u0===cur.tStop, u1===cur.dNet, u2===cur.totalDist];
+      correct = ok.every(Boolean);
+      markInputs(ok);
+      if (!correct) msg = `정답: 방향전환=${cur.tStop}s, 변위=${cur.dNet}m, 총이동거리=${cur.totalDist}m`;
+    }
 
-  } else {
-    const userTStop = parseInt(document.getElementById('inp-tstop').value);
-    const userDNet  = parseInt(document.getElementById('inp-dnet').value);
-    const userDTot  = parseInt(document.getElementById('inp-dtot').value);
-    const { tStop, dNet, totalDist } = currentProblem;
-    const allOk = userTStop === tStop && userDNet === Math.round(dNet) && userDTot === Math.round(totalDist);
-    correct = allOk;
-    markInput('inp-tstop', userTStop === tStop);
-    markInput('inp-dnet',  userDNet  === Math.round(dNet));
-    markInput('inp-dtot',  userDTot  === Math.round(totalDist));
-    if (!correct) showMessage('wrong',
-      `오답. 정답: 정지시각=${tStop}s, 변위=${Math.round(dNet)}m, 총이동거리=${Math.round(totalDist)}m`);
+  } else { // lv3
+    const st = cur.subtype;
+    if (st === 'two_obj') {
+      const [u0,u1,u2,u3] = getInputs(4);
+      const ok = [u0===cur.va_t, u1===cur.vb_t, u2===cur.da, u3===cur.db];
+      correct = ok.every(Boolean);
+      markInputs(ok);
+      if (!correct) msg = `정답: A속도=${cur.va_t}m/s, B속도=${cur.vb_t}m/s, A변위=${cur.da}m, B변위=${cur.db}m`;
+    } else { // complex
+      const [u0,u1,u2,u3] = getInputs(4);
+      const ok = [u0===cur.tStop, u1===cur.xQ, u2===cur.totalDist, u3===cur.dNet];
+      correct = ok.every(Boolean);
+      markInputs(ok);
+      if (!correct) msg = `정답: 방향전환=${cur.tStop}s, ${cur.tQ}초 변위=${cur.xQ}m, 총이동거리=${cur.totalDist}m, 최종변위=${cur.dNet}m`;
+    }
   }
 
   if (correct) {
-    score += 2;
-    document.getElementById('score-display').textContent = score;
-    showMessage('correct', '정답입니다! +2점');
+    score += 2; streak++;
+    showMsg('correct', `정답입니다! 🎉 +2점`);
   } else {
-    score = Math.max(0, score - 1);
-    document.getElementById('score-display').textContent = score;
+    score = Math.max(0, score-1); streak = 0;
+    showMsg('wrong', `오답입니다. ${msg}`);
   }
+  document.getElementById('score-display').textContent = score;
+  document.getElementById('prob-streak').textContent = `연속정답: ${streak}`;
 }
 
-function markInput(id, ok) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.classList.add(ok ? 'correct-input' : 'wrong-input');
+function getInputs(n) {
+  const vals = [];
+  for (let i=0;i<n;i++) {
+    const el = document.getElementById('i'+i);
+    vals.push(el ? parseInt(el.value) : NaN);
+  }
+  return vals;
+}
+
+function markInputs(ok) {
+  ok.forEach((b,i) => {
+    const el = document.getElementById('i'+i);
+    if (el) el.classList.add(b ? 'ok' : 'bad');
+  });
 }
 
 function nextProblem() {
-  // 입력 스타일 초기화
-  document.querySelectorAll('input').forEach(el => {
-    el.classList.remove('correct-input','wrong-input');
-    el.value = '';
-  });
+  resetInputs();
   generateProblem();
 }
 
-// ─────────────────────────────────────────────
-// 캔버스 그리기 유틸
-// ─────────────────────────────────────────────
-const COLORS = {
-  axis: '#8b8fa8',
-  grid: '#2e3347',
-  line: '#4f8ef7',
-  fill: 'rgba(79,142,247,0.12)',
-  label: '#e8eaf2',
-  tick:  '#8b8fa8',
-  zero:  '#f7614f',
+// ═══════════════════════════════════════════
+//  캔버스 그리기
+// ═══════════════════════════════════════════
+const C = {
+  axis:'#8b8fa8', grid:'#2a2e40',
+  lineA:'#4f8ef7', lineB:'#f7c94f',
+  fillA:'rgba(79,142,247,0.10)', fillB:'rgba(247,201,79,0.10)',
+  label:'#e8eaf2', tick:'#8b8fa8', zero:'#f7614f',
+  bg:'#1a1d27'
 };
 
-function setupAxes(ctx, W, H, px, py, xLabel, yLabel) {
-  ctx.strokeStyle = COLORS.axis;
-  ctx.lineWidth = 1.5;
-  // y축
-  ctx.beginPath(); ctx.moveTo(px, 10); ctx.lineTo(px, H - py + 10); ctx.stroke();
-  // x축
-  ctx.beginPath(); ctx.moveTo(px - 10, H - py); ctx.lineTo(W - 10, H - py); ctx.stroke();
-  // 화살표
-  ctx.fillStyle = COLORS.axis;
-  arrow(ctx, px, 10, 'up');
-  arrow(ctx, W - 10, H - py, 'right');
-  // 축 레이블
-  ctx.font = '12px JetBrains Mono, monospace';
-  ctx.fillStyle = COLORS.tick;
-  ctx.fillText(xLabel, W - 8, H - py + 14);
-  ctx.fillText(yLabel, px + 6, 14);
+// 주 캔버스 표시/숨기기
+function showCanvas(show) {
+  document.getElementById('canvas-wrap').style.display = show ? 'block' : 'none';
 }
 
-function arrow(ctx, x, y, dir) {
-  ctx.beginPath();
-  if (dir === 'up')    { ctx.moveTo(x-5,y+8);  ctx.lineTo(x,y);  ctx.lineTo(x+5,y+8); }
-  if (dir === 'right') { ctx.moveTo(x-8,y-5);  ctx.lineTo(x,y);  ctx.lineTo(x-8,y+5); }
-  ctx.stroke();
-}
-
-// 선택지 그래프 (소형)
-function drawChoiceGraph(cvs, type) {
-  const ctx = cvs.getContext('2d');
-  const W = cvs.width, H = cvs.height;
-  ctx.clearRect(0, 0, W, H);
-
-  const px = 36, py = 24;
-  const gW = W - px - 16, gH = H - py - 24;
-
-  // 배경
-  ctx.fillStyle = '#1a1d27';
-  ctx.fillRect(0, 0, W, H);
-
-  setupAxes(ctx, W, H, px, py, 't', 'v');
-
-  // 유형별 그래프 선
-  ctx.strokeStyle = COLORS.line;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-
-  const x0 = px, x1 = W - 16;
-  const y0 = H - py;   // v=0 선
-  const ymid = H - py - gH / 2;
-  const ytop = H - py - gH + 10;
-  const ybot = H - py + 0;
-
-  if (type === 'A') {
-    // v0=0, 양가속도
-    ctx.moveTo(x0, y0); ctx.lineTo(x1, ytop);
-  } else if (type === 'B') {
-    // 등속 (수평)
-    ctx.moveTo(x0, ymid); ctx.lineTo(x1, ymid);
-  } else if (type === 'C') {
-    // 감속 → 정지
-    const xStop = x0 + gW * 0.6;
-    ctx.moveTo(x0, ymid); ctx.lineTo(xStop, y0); ctx.lineTo(xStop, y0);
-    // 이후 수평 (정지)
-    ctx.moveTo(xStop, y0); ctx.lineTo(x1, y0);
-  } else if (type === 'D') {
-    // 음의 초속도, 음가속도 (더 빠르게 음으로)
-    ctx.moveTo(x0, ymid); ctx.lineTo(x1, H - 14);
-  }
-  ctx.stroke();
-
-  // 그래프 유형 라벨
-  ctx.fillStyle = COLORS.tick;
-  ctx.font = '11px Noto Sans KR, sans-serif';
-  ctx.fillText(['A','B','C','D'].includes(type) ? `선택지` : '', 4, 12);
-}
-
-// 메인 그래프 (레벨2, 3)
-function drawMainGraph() {
+// v-t 그래프 (메인)
+function drawMainVT(v0, a, tEnd, hasNeg) {
   const cvs = document.getElementById('main-canvas');
   const ctx = cvs.getContext('2d');
-  const W = cvs.width, H = cvs.height;
-  ctx.clearRect(0, 0, W, H);
+  const W=cvs.width, H=cvs.height;
+  ctx.fillStyle=C.bg; ctx.fillRect(0,0,W,H);
 
-  ctx.fillStyle = '#1a1d27';
-  ctx.fillRect(0, 0, W, H);
+  const px=58, py=36, pr=20, pb=40;
+  const gW=W-px-pr, gH=H-py-pb;
 
-  const px = 52, py = 30;
-  const gW = W - px - 20, gH = H - py - 36;
+  const vEnd = v0 + a*tEnd;
+  const vMax = Math.max(v0, vEnd, 0) + 2;
+  const vMin = Math.min(v0, vEnd, 0) - 2;
+  const vRange = vMax - vMin;
 
-  const { v0, a, tEnd } = currentProblem;
+  const toX = (t) => px + (t/tEnd)*gW;
+  const toY = (v) => py + gH - ((v-vMin)/vRange)*gH;
 
-  if (currentProblem.graphType === 'vt' || currentProblem.graphType === 'vt3') {
-    const vMax = v0 + Math.abs(a) * (tEnd + 1);
-    const vMin = currentProblem.graphType === 'vt3'
-      ? (v0 + a * (tEnd + 1))
-      : 0;
-    const vRange = Math.max(vMax, Math.abs(vMin)) + 2;
-
-    // 눈금 및 그리드
-    ctx.strokeStyle = COLORS.grid;
-    ctx.lineWidth = 0.7;
-    for (let t = 0; t <= tEnd + 1; t++) {
-      const x = px + (t / (tEnd + 1)) * gW;
-      ctx.beginPath(); ctx.moveTo(x, py - 10); ctx.lineTo(x, H - py + 6); ctx.stroke();
-      ctx.fillStyle = COLORS.tick;
-      ctx.font = '11px JetBrains Mono, monospace';
-      if (t > 0) ctx.fillText(t, x - 4, H - py + 18);
-    }
-
-    // v=0 기준선
-    const yZero = (currentProblem.graphType === 'vt3')
-      ? py + (vRange / (2 * vRange)) * gH  // 중간
-      : H - py;
-
-    // v-t 직선
-    const x0 = px;
-    const x1 = px + (tEnd / (tEnd + 1)) * gW;
-    const toY = (v) => {
-      if (currentProblem.graphType === 'vt') return H - py - (v / vRange) * gH;
-      return H - py - ((v + vRange) / (2 * vRange)) * gH;
-    };
-
-    // 채우기
-    ctx.fillStyle = COLORS.fill;
-    ctx.beginPath();
-    ctx.moveTo(x0, toY(v0));
-    ctx.lineTo(x1, toY(v0 + a * tEnd));
-    ctx.lineTo(x1, toY(0));
-    ctx.lineTo(x0, toY(0));
-    ctx.closePath();
-    ctx.fill();
-
-    // 선
-    ctx.strokeStyle = COLORS.line;
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(x0, toY(v0));
-    ctx.lineTo(x1, toY(v0 + a * tEnd));
-    ctx.stroke();
-
-    // v=0 빨간 기준선 (레벨3)
-    if (currentProblem.graphType === 'vt3') {
-      ctx.strokeStyle = COLORS.zero;
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 4]);
-      ctx.beginPath();
-      ctx.moveTo(px - 6, toY(0));
-      ctx.lineTo(W - 20, toY(0));
-      ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle = COLORS.zero;
-      ctx.font = '11px JetBrains Mono, monospace';
-      ctx.fillText('0', px - 14, toY(0) + 4);
-    }
-
-    // 축
-    setupAxes(ctx, W, H, px, py, 't(s)', 'v(m/s)');
-
-    // v0 표시
-    ctx.fillStyle = COLORS.label;
-    ctx.font = '11px JetBrains Mono, monospace';
-    ctx.fillText(v0, px - 22, toY(v0) + 4);
-    ctx.fillText(tEnd, x1 - 4, H - py + 18);
+  // 그리드
+  ctx.strokeStyle=C.grid; ctx.lineWidth=0.7;
+  for (let t=0; t<=tEnd; t++) {
+    const x=toX(t);
+    ctx.beginPath(); ctx.moveTo(x,py-8); ctx.lineTo(x,H-pb+8); ctx.stroke();
   }
+
+  // v=0 기준선
+  if (hasNeg) {
+    const y0=toY(0);
+    ctx.strokeStyle=C.zero; ctx.lineWidth=1;
+    ctx.setLineDash([5,4]);
+    ctx.beginPath(); ctx.moveTo(px-8,y0); ctx.lineTo(W-pr,y0); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=C.zero; ctx.font='11px JetBrains Mono,monospace';
+    ctx.fillText('0', px-18, y0+4);
+  }
+
+  // 채우기
+  const x0=toX(0), x1=toX(tEnd), y0line=toY(0);
+  ctx.fillStyle=C.fillA;
+  ctx.beginPath();
+  ctx.moveTo(x0,toY(v0)); ctx.lineTo(x1,toY(vEnd));
+  ctx.lineTo(x1,y0line);  ctx.lineTo(x0,y0line);
+  ctx.closePath(); ctx.fill();
+
+  // v-t 선
+  ctx.strokeStyle=C.lineA; ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.moveTo(x0,toY(v0)); ctx.lineTo(x1,toY(vEnd)); ctx.stroke();
+
+  // 축
+  drawAxes(ctx, W, H, px, py, pr, pb, 't(s)', 'v(m/s)');
+
+  // 눈금 레이블
+  ctx.fillStyle=C.tick; ctx.font='11px JetBrains Mono,monospace';
+  for (let t=1; t<=tEnd; t++) {
+    ctx.fillText(t, toX(t)-4, H-pb+16);
+  }
+  // v0 레이블
+  ctx.fillStyle=C.label; ctx.font='11px JetBrains Mono,monospace';
+  ctx.fillText(v0, px-24, toY(v0)+4);
 }
 
-// 메시지
-function showMessage(type, text) {
-  const el = document.getElementById('message');
-  el.textContent = text;
-  el.className = type;
-  el.style.display = 'block';
-}
-function hideMessage() {
-  const el = document.getElementById('message');
-  el.style.display = 'none';
-  el.className = '';
+// a-t 그래프 (메인)
+function drawMainAT(a, tEnd) {
+  const cvs = document.getElementById('main-canvas');
+  const ctx = cvs.getContext('2d');
+  const W=cvs.width, H=cvs.height;
+  ctx.fillStyle=C.bg; ctx.fillRect(0,0,W,H);
+
+  const px=58, py=36, pr=20, pb=40;
+  const gW=W-px-pr, gH=H-py-pb;
+
+  const aMax = a+2, aMin = 0;
+  const toX = (t) => px + (t/tEnd)*gW;
+  const toY = (v) => py + gH - ((v-aMin)/(aMax-aMin))*gH;
+
+  // 그리드
+  ctx.strokeStyle=C.grid; ctx.lineWidth=0.7;
+  for (let t=0;t<=tEnd;t++) {
+    const x=toX(t);
+    ctx.beginPath(); ctx.moveTo(x,py-8); ctx.lineTo(x,H-pb+8); ctx.stroke();
+  }
+
+  // 채우기 (넓이 = 속도 변화량)
+  ctx.fillStyle=C.fillA;
+  ctx.fillRect(toX(0), toY(a), toX(tEnd)-toX(0), toY(0)-toY(a));
+
+  // a-t 수평선
+  ctx.strokeStyle=C.lineA; ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.moveTo(toX(0),toY(a)); ctx.lineTo(toX(tEnd),toY(a)); ctx.stroke();
+  // 수직 점선
+  ctx.strokeStyle=C.lineA; ctx.lineWidth=1.5; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(toX(0),toY(a)); ctx.lineTo(toX(0),toY(0)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(toX(tEnd),toY(a)); ctx.lineTo(toX(tEnd),toY(0)); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // 축
+  drawAxes(ctx, W, H, px, py, pr, pb, 't(s)', 'a(m/s²)');
+
+  // 눈금
+  ctx.fillStyle=C.tick; ctx.font='11px JetBrains Mono,monospace';
+  for (let t=1;t<=tEnd;t++) ctx.fillText(t, toX(t)-4, H-pb+16);
+  ctx.fillStyle=C.label;
+  ctx.fillText(a, px-22, toY(a)+4);
 }
 
-// 최초 화면
+// 두 물체 v-t (메인)
+function drawMainTwoObj(v0a,aa,v0b,ab,tEnd) {
+  const cvs = document.getElementById('main-canvas');
+  const ctx = cvs.getContext('2d');
+  const W=cvs.width, H=cvs.height;
+  ctx.fillStyle=C.bg; ctx.fillRect(0,0,W,H);
+
+  const px=58, py=36, pr=20, pb=40;
+  const gW=W-px-pr, gH=H-py-pb;
+
+  const allV = [v0a, v0a+aa*tEnd, v0b, v0b+ab*tEnd, 0];
+  const vMax = Math.max(...allV)+2;
+  const vMin = Math.min(...allV)-2;
+  const vRange = vMax-vMin;
+
+  const toX = (t) => px+(t/tEnd)*gW;
+  const toY = (v) => py+gH-((v-vMin)/vRange)*gH;
+
+  // 그리드
+  ctx.strokeStyle=C.grid; ctx.lineWidth=0.7;
+  for (let t=0;t<=tEnd;t++) {
+    const x=toX(t);
+    ctx.beginPath(); ctx.moveTo(x,py-8); ctx.lineTo(x,H-pb+8); ctx.stroke();
+  }
+
+  // A 채우기·선
+  ctx.fillStyle=C.fillA;
+  ctx.beginPath();
+  ctx.moveTo(toX(0),toY(v0a)); ctx.lineTo(toX(tEnd),toY(v0a+aa*tEnd));
+  ctx.lineTo(toX(tEnd),toY(0)); ctx.lineTo(toX(0),toY(0));
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle=C.lineA; ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.moveTo(toX(0),toY(v0a)); ctx.lineTo(toX(tEnd),toY(v0a+aa*tEnd)); ctx.stroke();
+
+  // B 채우기·선
+  ctx.fillStyle=C.fillB;
+  ctx.beginPath();
+  ctx.moveTo(toX(0),toY(v0b)); ctx.lineTo(toX(tEnd),toY(v0b+ab*tEnd));
+  ctx.lineTo(toX(tEnd),toY(0)); ctx.lineTo(toX(0),toY(0));
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle=C.lineB; ctx.lineWidth=2.5;
+  ctx.beginPath(); ctx.moveTo(toX(0),toY(v0b)); ctx.lineTo(toX(tEnd),toY(v0b+ab*tEnd)); ctx.stroke();
+
+  // 범례
+  ctx.fillStyle=C.lineA; ctx.fillRect(W-pr-70,py+6,14,3);
+  ctx.fillStyle=C.label; ctx.font='12px Noto Sans KR,sans-serif';
+  ctx.fillText('A', W-pr-52, py+14);
+  ctx.fillStyle=C.lineB; ctx.fillRect(W-pr-70,py+22,14,3);
+  ctx.fillStyle=C.label; ctx.fillText('B', W-pr-52, py+30);
+
+  // 축·눈금
+  drawAxes(ctx, W, H, px, py, pr, pb, 't(s)', 'v(m/s)');
+  ctx.fillStyle=C.tick; ctx.font='11px JetBrains Mono,monospace';
+  for (let t=1;t<=tEnd;t++) ctx.fillText(t, toX(t)-4, H-pb+16);
+  ctx.fillStyle=C.label;
+  ctx.fillText(v0a, px-24, toY(v0a)+4);
+  ctx.fillText(v0b, px-24, toY(v0b)+4);
+}
+
+// 소형 v-t 그래프 (선택지용)
+function drawSmallVT(cvs, type, p) {
+  const ctx = cvs.getContext('2d');
+  const W=cvs.width, H=cvs.height;
+  ctx.fillStyle=C.bg; ctx.fillRect(0,0,W,H);
+
+  const px=30, py=20, pr=12, pb=22;
+  const gW=W-px-pr, gH=H-py-pb;
+
+  // 각 유형별 시뮬 데이터
+  let pts = []; // [{t,v}]
+  const dur = 5;
+  if (type==='pos_acc') {
+    pts=[{t:0,v:p.v0||0},{t:dur,v:(p.v0||0)+(p.a||2)*dur}];
+  } else if (type==='pos_con') {
+    const v=p.v0||4; pts=[{t:0,v},{t:dur,v}];
+  } else if (type==='pos_dec') {
+    const ts=Math.min(p.tStop||2.5, dur);
+    pts=[{t:0,v:p.v0||6},{t:ts,v:0},{t:dur,v:0}];
+  } else if (type==='dir_rev') {
+    const ts=p.tStop||2;
+    const vEnd=(p.v0||4)+(p.a||-2)*dur;
+    pts=[{t:0,v:p.v0||4},{t:ts,v:0},{t:dur,v:vEnd}];
+  } else if (type==='neg_acc') {
+    pts=[{t:0,v:p.v0||(-4)},{t:dur,v:(p.v0||(-4))+(p.a||(-2))*dur}];
+  } else if (type==='neg_start') {
+    const vEnd=(p.v0||(-6))+(p.a||2)*dur;
+    pts=[{t:0,v:p.v0||(-6)},{t:dur,v:vEnd}];
+  }
+
+  const allV = pts.map(p=>p.v);
+  const vMax = Math.max(...allV,0)+1;
+  const vMin = Math.min(...allV,0)-1;
+  const vRange = vMax-vMin;
+
+  const toX = (t) => px+(t/dur)*gW;
+  const toY = (v) => py+gH-((v-vMin)/vRange)*gH;
+
+  // v=0 선
+  if (vMin<0) {
+    ctx.strokeStyle=C.zero; ctx.lineWidth=0.8; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(px,toY(0)); ctx.lineTo(W-pr,toY(0)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=C.zero; ctx.font='9px JetBrains Mono,monospace';
+    ctx.fillText('0', px-14, toY(0)+3);
+  }
+
+  // 그래프 선
+  ctx.strokeStyle=C.lineA; ctx.lineWidth=2;
+  ctx.beginPath();
+  pts.forEach((pt,i) => i===0 ? ctx.moveTo(toX(pt.t),toY(pt.v)) : ctx.lineTo(toX(pt.t),toY(pt.v)));
+  ctx.stroke();
+
+  // 간단한 축
+  ctx.strokeStyle=C.axis; ctx.lineWidth=1.2;
+  ctx.beginPath(); ctx.moveTo(px,py-4); ctx.lineTo(px,H-pb+4); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(px-4,H-pb); ctx.lineTo(W-pr+4,H-pb); ctx.stroke();
+  ctx.fillStyle=C.tick; ctx.font='9px JetBrains Mono,monospace';
+  ctx.fillText('t',W-pr+2,H-pb+3);
+  ctx.fillText('v',px+3,py-2);
+}
+
+// 공통 축 그리기
+function drawAxes(ctx, W, H, px, py, pr, pb, xLabel, yLabel) {
+  ctx.strokeStyle=C.axis; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(px,py-10); ctx.lineTo(px,H-pb+10); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(px-10,H-pb); ctx.lineTo(W-pr+10,H-pb); ctx.stroke();
+  // 화살표
+  ctx.fillStyle=C.axis;
+  arrowHead(ctx,px,py-10,'up');
+  arrowHead(ctx,W-pr+10,H-pb,'right');
+  // 레이블
+  ctx.fillStyle=C.tick; ctx.font='12px JetBrains Mono,monospace';
+  ctx.fillText(xLabel, W-pr+4, H-pb+4);
+  ctx.fillText(yLabel, px+5, py-12);
+}
+function arrowHead(ctx,x,y,dir) {
+  ctx.beginPath();
+  if (dir==='up')    { ctx.moveTo(x-5,y+9); ctx.lineTo(x,y); ctx.lineTo(x+5,y+9); }
+  if (dir==='right') { ctx.moveTo(x-9,y-5); ctx.lineTo(x,y); ctx.lineTo(x-9,y+5); }
+  ctx.stroke();
+}
+
+// ═══════════════════════════════════════════
+//  유틸
+// ═══════════════════════════════════════════
+function shuffle(arr) {
+  for (let i=arr.length-1;i>0;i--) {
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+function showMsg(type, text) {
+  const el=document.getElementById('message');
+  el.textContent=text; el.className=type; el.style.display='block';
+}
+function hideMsg() {
+  const el=document.getElementById('message');
+  el.style.display='none'; el.className='';
+}
+function resetInputs() {
+  document.querySelectorAll('#input-area input').forEach(el => {
+    el.classList.remove('ok','bad'); el.value='';
+  });
+}
+
+// 시작
 goToLevelSelect();
 </script>
 </body>
