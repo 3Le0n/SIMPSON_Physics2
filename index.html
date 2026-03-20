@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -25,272 +26,288 @@
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html, body {
-      font-family: var(--sans);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      -webkit-text-size-adjust: 100%;
-    }
+```
+html, body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-text-size-adjust: 100%;
+}
 
-    /* ── 헤더 ── */
-    header {
-      position: sticky; top: 0; z-index: 100;
-      background: var(--panel);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      height: 46px;
-    }
-    header h1 { font-size: 0.92em; font-weight: 600; }
-    header h1 em { font-style: normal; color: var(--accent); }
-    .hdr-right {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 0.72em; color: var(--sub);
-      font-family: var(--mono);
-    }
-    .live-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 6px var(--green);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+/* ── 헤더 ── */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 46px;
+}
+header h1 { font-size: 0.92em; font-weight: 600; }
+header h1 em { font-style: normal; color: var(--accent); }
+.hdr-right {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.72em; color: var(--sub);
+  font-family: var(--mono);
+}
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
 
-    /* ── 페이지 전체 스크롤 ── */
-    .page {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      padding-bottom: 32px;
-    }
+/* ── 페이지 전체 스크롤 ── */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-bottom: 32px;
+}
 
-    /* ── 섹션 공통 ── */
-    .sec {
-      border-bottom: 1px solid var(--border);
-    }
+/* ── 섹션 공통 ── */
+.sec {
+  border-bottom: 1px solid var(--border);
+}
 
-    /* ── 아코디언 헤더 ── */
-    .acc-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-      cursor: pointer;
-      user-select: none;
-      background: var(--panel);
-      -webkit-tap-highlight-color: transparent;
-    }
-    .acc-header:active { background: var(--surface); }
-    .acc-title {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 0.8em; font-weight: 600;
-      font-family: var(--mono); text-transform: uppercase;
-      letter-spacing: 0.8px; color: var(--sub);
-    }
-    .acc-title .dot {
-      width: 7px; height: 7px; border-radius: 50%;
-    }
-    .acc-chevron {
-      font-size: 0.7em; color: var(--sub);
-      transition: transform .22s;
-    }
-    .acc-chevron.open { transform: rotate(180deg); }
-    .acc-body {
-      overflow: hidden;
-      transition: max-height .28s ease;
-    }
-    .acc-body.collapsed { max-height: 0 !important; }
-    .acc-inner { padding: 0 12px 14px; }
+/* ── 아코디언 헤더 ── */
+.acc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  user-select: none;
+  background: var(--panel);
+  -webkit-tap-highlight-color: transparent;
+}
+.acc-header:active { background: var(--surface); }
+.acc-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.8em; font-weight: 600;
+  font-family: var(--mono); text-transform: uppercase;
+  letter-spacing: 0.8px; color: var(--sub);
+}
+.acc-title .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+}
+.acc-chevron {
+  font-size: 0.7em; color: var(--sub);
+  transition: transform .22s;
+}
+.acc-chevron.open { transform: rotate(180deg); }
+.acc-body {
+  overflow: hidden;
+  transition: max-height .28s ease;
+  background: var(--bg);
+}
+.acc-body.collapsed { max-height: 0 !important; }
+.acc-inner { padding: 0 12px 14px; background: var(--bg); }
 
-    /* ── 구간 카드 ── */
-    .seg-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 11px 12px;
-      margin-bottom: 8px;
-    }
-    .seg-card:last-of-type { margin-bottom: 0; }
-    .seg-top {
-      display: flex; align-items: center;
-      justify-content: space-between;
-      margin-bottom: 9px;
-    }
-    .seg-name {
-      font-size: 0.75em; font-family: var(--mono); font-weight: 600;
-    }
-    .s1 .seg-name { color: var(--accent); }
-    .s2 .seg-name { color: var(--yellow); }
-    .s3 .seg-name { color: var(--purple); }
-    .seg-badge {
-      font-size: 0.65em; font-family: var(--mono);
-      color: var(--sub); background: var(--border);
-      padding: 2px 7px; border-radius: 4px;
-    }
+/* ── 구간 카드 ── */
+.seg-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 11px 12px;
+  margin-bottom: 8px;
+}
+.seg-card:last-of-type { margin-bottom: 0; }
+.seg-top {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 9px;
+}
+.seg-name {
+  font-size: 0.75em; font-family: var(--mono); font-weight: 600;
+}
+.s1 .seg-name { color: var(--accent); }
+.s2 .seg-name { color: var(--yellow); }
+.s3 .seg-name { color: var(--purple); }
+.seg-badge {
+  font-size: 0.65em; font-family: var(--mono);
+  color: var(--sub); background: var(--border);
+  padding: 2px 7px; border-radius: 4px;
+}
 
-    /* 3-컬럼 입력 */
-    .fields {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 6px;
-    }
-    .field label {
-      display: block;
-      font-size: 0.62em; font-family: var(--mono);
-      color: var(--sub); margin-bottom: 3px;
-    }
-    .field input {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 0.88em;
-      padding: 7px 8px;
-      outline: none;
-      -webkit-appearance: none;
-      transition: border-color .18s;
-    }
-    .field input:focus { border-color: var(--accent); }
-    .field input[readonly] { color: var(--accent); border-style: dashed; }
+/* 3-컬럼 입력 */
+.fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+.field label {
+  display: block;
+  font-size: 0.62em; font-family: var(--mono);
+  color: var(--sub); margin-bottom: 3px;
+}
+.field input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.88em;
+  padding: 7px 8px;
+  outline: none;
+  transition: border-color .18s;
+}
+/* PC: 스핀 버튼 표시 (1단위 조작용) */
+.field input[type="number"] {
+  -moz-appearance: textfield; /* Firefox: 스핀 숨김 → JS로 처리 */
+}
+/* 모바일: 스핀 버튼 숨김 (쿼티 키보드 사용) */
+@media (hover: none) and (pointer: coarse) {
+  .field input[type="number"]::-webkit-inner-spin-button,
+  .field input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+}
+.field input.invalid { border-color: var(--red); }
+.field input:focus { border-color: var(--accent); }
+.field input[readonly] { color: var(--accent); border-style: dashed; }
+/* readonly는 모든 환경에서 스핀 숨김 */
+.field input[readonly]::-webkit-inner-spin-button,
+.field input[readonly]::-webkit-outer-spin-button { -webkit-appearance: none; }
 
-    /* 구간 연결 화살표 */
-    .seg-bridge {
-      display: flex; align-items: center; gap: 8px;
-      padding: 4px 4px;
-      font-size: 0.62em; font-family: var(--mono); color: var(--sub);
-    }
-    .bridge-line { flex:1; height:1px; background: var(--border2); }
+/* 구간 연결 화살표 */
+.seg-bridge {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 4px;
+  font-size: 0.62em; font-family: var(--mono); color: var(--sub);
+}
+.bridge-line { flex:1; height:1px; background: var(--border2); }
 
-    /* 버튼들 */
-    .btn-row {
-      display: grid; grid-template-columns: 1fr auto;
-      gap: 8px; padding: 12px 12px 0;
-    }
-    .btn-run {
-      background: var(--accent); color: #000;
-      border: none; border-radius: var(--r);
-      padding: 11px 14px;
-      font-family: var(--sans); font-size: 0.9em; font-weight: 600;
-      cursor: pointer; letter-spacing: 0.2px;
-      -webkit-tap-highlight-color: transparent;
-      transition: opacity .15s;
-    }
-    .btn-run:active { opacity: .8; }
-    .btn-reset {
-      background: none; border: 1px solid var(--border2);
-      color: var(--sub); border-radius: var(--r);
-      padding: 11px 14px;
-      font-family: var(--sans); font-size: 0.82em;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btn-reset:active { border-color: var(--red); color: var(--red); }
+/* 버튼들 */
+.btn-row {
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 8px; padding: 12px 12px 0;
+}
+.btn-run {
+  background: var(--accent); color: #000;
+  border: none; border-radius: var(--r);
+  padding: 11px 14px;
+  font-family: var(--sans); font-size: 0.9em; font-weight: 600;
+  cursor: pointer; letter-spacing: 0.2px;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s;
+}
+.btn-run:active { opacity: .8; }
+.btn-reset {
+  background: none; border: 1px solid var(--border2);
+  color: var(--sub); border-radius: var(--r);
+  padding: 11px 14px;
+  font-family: var(--sans); font-size: 0.82em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-reset:active { border-color: var(--red); color: var(--red); }
 
-    /* ── 그래프 섹션 ── */
-    .graph-inner { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 10px; }
+/* ── 그래프 섹션 ── */
+.graph-inner { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 10px; }
 
-    .graph-block {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 10px 12px 8px;
-    }
-    .graph-block-hdr {
-      display: flex; align-items: center;
-      justify-content: space-between; margin-bottom: 7px;
-    }
-    .graph-block-title {
-      font-size: 0.72em; font-family: var(--mono); font-weight: 600;
-    }
-    .gt-st { color: var(--green); }
-    .gt-vt { color: var(--accent); }
-    .gt-at { color: var(--yellow); }
-    .graph-hint { font-size: 0.6em; color: var(--sub); font-family: var(--mono); }
+.graph-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 10px 12px 8px;
+}
+.graph-block-hdr {
+  display: flex; align-items: center;
+  justify-content: space-between; margin-bottom: 7px;
+}
+.graph-block-title {
+  font-size: 0.72em; font-family: var(--mono); font-weight: 600;
+}
+.gt-st { color: var(--green); }
+.gt-vt { color: var(--accent); }
+.gt-at { color: var(--yellow); }
+.graph-hint { font-size: 0.6em; color: var(--sub); font-family: var(--mono); }
 
-    canvas { display: block; width: 100%; }
+canvas { display: block; width: 100%; }
 
-    /* 빈 상태 */
-    .empty-state {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 40px 0; gap: 10px; color: var(--sub);
-    }
-    .empty-icon { font-size: 2.2em; opacity: .3; }
-    .empty-text { font-size: 0.78em; font-family: var(--mono); }
+/* 빈 상태 */
+.empty-state {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 40px 0; gap: 10px; color: var(--sub);
+}
+.empty-icon { font-size: 2.2em; opacity: .3; }
+.empty-text { font-size: 0.78em; font-family: var(--mono); }
 
-    /* ── 분석 섹션 ── */
-    .ana-inner { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 12px; }
+/* ── 분석 섹션 ── */
+.ana-inner { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 12px; }
 
-    .ana-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 12px;
-    }
-    .ana-card-title {
-      font-size: 0.64em; font-family: var(--mono);
-      color: var(--sub); text-transform: uppercase;
-      letter-spacing: 1px; margin-bottom: 9px;
-    }
-    .ana-row {
-      display: flex; justify-content: space-between;
-      align-items: baseline; gap: 8px;
-      padding: 3px 0;
-    }
-    .ana-key { font-size: 0.75em; color: var(--sub); }
-    .ana-val { font-size: 0.82em; font-family: var(--mono); font-weight: 600; }
-    .ana-val.green  { color: var(--green); }
-    .ana-val.accent { color: var(--accent); }
-    .ana-val.yellow { color: var(--yellow); }
-    .ana-val.red    { color: var(--red); }
-    .ana-val.purple { color: var(--purple); }
-    .ana-val.sub    { color: var(--sub); }
+.ana-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 12px;
+}
+.ana-card-title {
+  font-size: 0.64em; font-family: var(--mono);
+  color: var(--sub); text-transform: uppercase;
+  letter-spacing: 1px; margin-bottom: 9px;
+}
+.ana-row {
+  display: flex; justify-content: space-between;
+  align-items: baseline; gap: 8px;
+  padding: 3px 0;
+}
+.ana-key { font-size: 0.75em; color: var(--sub); }
+.ana-val { font-size: 0.82em; font-family: var(--mono); font-weight: 600; }
+.ana-val.green  { color: var(--green); }
+.ana-val.accent { color: var(--accent); }
+.ana-val.yellow { color: var(--yellow); }
+.ana-val.red    { color: var(--red); }
+.ana-val.purple { color: var(--purple); }
+.ana-val.sub    { color: var(--sub); }
 
-    /* 구간별 변위 바 */
-    .seg-bar-row { margin-bottom: 7px; }
-    .seg-bar-row:last-child { margin-bottom: 0; }
-    .seg-bar-label {
-      display: flex; justify-content: space-between;
-      font-size: 0.68em; font-family: var(--mono); margin-bottom: 3px;
-    }
-    .seg-bar-track {
-      height: 5px; background: var(--border); border-radius: 3px; overflow: hidden;
-    }
-    .seg-bar-fill { height: 100%; border-radius: 3px; transition: width .4s ease; }
+/* 구간별 변위 바 */
+.seg-bar-row { margin-bottom: 7px; }
+.seg-bar-row:last-child { margin-bottom: 0; }
+.seg-bar-label {
+  display: flex; justify-content: space-between;
+  font-size: 0.68em; font-family: var(--mono); margin-bottom: 3px;
+}
+.seg-bar-track {
+  height: 5px; background: var(--border); border-radius: 3px; overflow: hidden;
+}
+.seg-bar-fill { height: 100%; border-radius: 3px; transition: width .4s ease; }
 
-    /* 분석 2컬럼 그리드 */
-    .ana-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-    }
-    .ana-grid .ana-card { padding: 10px; }
+/* 분석 2컬럼 그리드 */
+.ana-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+}
+.ana-grid .ana-card { padding: 10px; }
 
-    /* 시각 조회 */
-    .query-input-row {
-      display: flex; align-items: center; gap: 6px; margin-bottom: 9px;
-    }
-    .query-input-row label {
-      font-size: 0.72em; font-family: var(--mono); color: var(--sub); white-space: nowrap;
-    }
-    .query-input-row input {
-      flex: 1; background: var(--bg);
-      border: 1px solid var(--border); border-radius: 6px;
-      color: var(--text); font-family: var(--mono);
-      font-size: 0.9em; padding: 7px 9px; outline: none;
-      -webkit-appearance: none;
-    }
-    .query-input-row input:focus { border-color: var(--accent); }
+/* 시각 조회 */
+.query-input-row {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 9px;
+}
+.query-input-row label {
+  font-size: 0.72em; font-family: var(--mono); color: var(--sub); white-space: nowrap;
+}
+.query-input-row input {
+  flex: 1; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); font-family: var(--mono);
+  font-size: 0.9em; padding: 7px 9px; outline: none;
+  -webkit-appearance: none;
+}
+.query-input-row input:focus { border-color: var(--accent); }
 
-    /* 크레딧 */
-    .credit {
-      text-align: center; font-size: 0.65em;
-      font-family: var(--mono); color: var(--border2);
-      padding: 20px 0 4px;
-    }
+/* 크레딧 */
+.credit {
+  text-align: center; font-size: 0.65em;
+  font-family: var(--mono); color: var(--border2);
+  padding: 20px 0 4px;
+}
+```
+
   </style>
 </head>
 <body>
@@ -306,6 +323,7 @@
 <div class="page">
 
   <!-- ① 입력 섹션 (아코디언) -->
+
   <div class="sec" id="sec-input">
     <div class="acc-header" onclick="toggleAcc('input')">
       <div class="acc-title">
@@ -317,94 +335,103 @@
     <div class="acc-body" id="body-input">
       <div class="acc-inner">
 
-        <!-- 구간 1 -->
-        <div class="seg-card s1">
-          <div class="seg-top">
-            <span class="seg-name">구간 1</span>
-            <span class="seg-badge" id="badge-1">0 ~ ? s</span>
-          </div>
-          <div class="fields">
-            <div class="field">
-              <label>v₀ (m/s)</label>
-              <input type="number" id="s1-v0" inputmode="decimal" placeholder="예) 0">
-            </div>
-            <div class="field">
-              <label>a (m/s²)</label>
-              <input type="number" id="s1-a" inputmode="decimal" placeholder="예) 2">
-            </div>
-            <div class="field">
-              <label>Δt (s)</label>
-              <input type="number" id="s1-t" inputmode="decimal" placeholder="예) 3" min="0.1">
-            </div>
-          </div>
-        </div>
+```
+    <!-- 모바일 입력 안내 -->
+    <div id="mobile-tip" style="display:none; font-size:0.68em; font-family:var(--mono); color:var(--sub); background:var(--border); border-radius:6px; padding:7px 10px; margin-bottom:10px; line-height:1.6;">
+      💡 음수 입력: <span style="color:var(--text)">−</span> 기호를 먼저 입력 후 숫자<br>예) <span style="color:var(--accent)">-3</span> 입력 → 가속도 −3 m/s²
+    </div>
 
-        <div class="seg-bridge">
-          <div class="bridge-line"></div>
-          <span>↓ 속도 자동 연결</span>
-          <div class="bridge-line"></div>
+    <!-- 구간 1 -->
+    <div class="seg-card s1">
+      <div class="seg-top">
+        <span class="seg-name">구간 1</span>
+        <span class="seg-badge" id="badge-1">0 ~ ? s</span>
+      </div>
+      <div class="fields">
+        <div class="field">
+          <label>v₀ (m/s)</label>
+          <input type="number" id="s1-v0" step="1" placeholder="0">
         </div>
-
-        <!-- 구간 2 -->
-        <div class="seg-card s2">
-          <div class="seg-top">
-            <span class="seg-name">구간 2</span>
-            <span class="seg-badge" id="badge-2">? ~ ? s</span>
-          </div>
-          <div class="fields">
-            <div class="field">
-              <label>v₀ (자동)</label>
-              <input type="number" id="s2-v0" readonly placeholder="—">
-            </div>
-            <div class="field">
-              <label>a (m/s²)</label>
-              <input type="number" id="s2-a" inputmode="decimal" placeholder="예) 0">
-            </div>
-            <div class="field">
-              <label>Δt (s)</label>
-              <input type="number" id="s2-t" inputmode="decimal" placeholder="예) 3" min="0.1">
-            </div>
-          </div>
+        <div class="field">
+          <label>a (m/s²)</label>
+          <input type="number" id="s1-a" step="1" placeholder="2">
         </div>
-
-        <div class="seg-bridge">
-          <div class="bridge-line"></div>
-          <span>↓ 속도 자동 연결</span>
-          <div class="bridge-line"></div>
+        <div class="field">
+          <label>Δt (s)</label>
+          <input type="number" id="s1-t" step="1" placeholder="3" min="0.1">
         </div>
-
-        <!-- 구간 3 -->
-        <div class="seg-card s3">
-          <div class="seg-top">
-            <span class="seg-name">구간 3</span>
-            <span class="seg-badge" id="badge-3">? ~ ? s</span>
-          </div>
-          <div class="fields">
-            <div class="field">
-              <label>v₀ (자동)</label>
-              <input type="number" id="s3-v0" readonly placeholder="—">
-            </div>
-            <div class="field">
-              <label>a (m/s²)</label>
-              <input type="number" id="s3-a" inputmode="decimal" placeholder="예) -3">
-            </div>
-            <div class="field">
-              <label>Δt (s)</label>
-              <input type="number" id="s3-t" inputmode="decimal" placeholder="예) 3" min="0.1">
-            </div>
-          </div>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn-run" onclick="runSim()">▶ 그래프 그리기</button>
-          <button class="btn-reset" onclick="resetAll()">초기화</button>
-        </div>
-
       </div>
     </div>
+
+    <div class="seg-bridge">
+      <div class="bridge-line"></div>
+      <span>↓ 속도 자동 연결</span>
+      <div class="bridge-line"></div>
+    </div>
+
+    <!-- 구간 2 -->
+    <div class="seg-card s2">
+      <div class="seg-top">
+        <span class="seg-name">구간 2</span>
+        <span class="seg-badge" id="badge-2">? ~ ? s</span>
+      </div>
+      <div class="fields">
+        <div class="field">
+          <label>v₀ (자동)</label>
+          <input type="number" id="s2-v0" readonly placeholder="—">
+        </div>
+        <div class="field">
+          <label>a (m/s²)</label>
+          <input type="number" id="s2-a" step="1" placeholder="0">
+        </div>
+        <div class="field">
+          <label>Δt (s)</label>
+          <input type="number" id="s2-t" step="1" placeholder="3" min="0.1">
+        </div>
+      </div>
+    </div>
+
+    <div class="seg-bridge">
+      <div class="bridge-line"></div>
+      <span>↓ 속도 자동 연결</span>
+      <div class="bridge-line"></div>
+    </div>
+
+    <!-- 구간 3 -->
+    <div class="seg-card s3">
+      <div class="seg-top">
+        <span class="seg-name">구간 3</span>
+        <span class="seg-badge" id="badge-3">? ~ ? s</span>
+      </div>
+      <div class="fields">
+        <div class="field">
+          <label>v₀ (자동)</label>
+          <input type="number" id="s3-v0" readonly placeholder="—">
+        </div>
+        <div class="field">
+          <label>a (m/s²)</label>
+          <input type="number" id="s3-a" step="1" placeholder="-3">
+        </div>
+        <div class="field">
+          <label>Δt (s)</label>
+          <input type="number" id="s3-t" step="1" placeholder="3" min="0.1">
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-run" onclick="runSim()">▶ 그래프 그리기</button>
+      <button class="btn-reset" onclick="resetAll()">초기화</button>
+    </div>
+
+  </div>
+</div>
+```
+
   </div>
 
   <!-- ② 그래프 섹션 -->
+
   <div class="sec" id="sec-graph">
     <div class="acc-header" onclick="toggleAcc('graph')">
       <div class="acc-title">
@@ -416,46 +443,50 @@
     <div class="acc-body" id="body-graph">
       <div class="graph-inner">
 
-        <div class="empty-state" id="empty-state">
-          <div class="empty-icon">📈</div>
-          <div class="empty-text">값을 입력하고 그래프를 그려보세요</div>
-        </div>
-
-        <div id="graphs-container" style="display:none; flex-direction:column; gap:10px;">
-
-          <!-- s-t -->
-          <div class="graph-block">
-            <div class="graph-block-hdr">
-              <span class="graph-block-title gt-st">s-t 그래프 (변위-시간)</span>
-              <span class="graph-hint">기울기 = 속도</span>
-            </div>
-            <canvas id="cvs-st" height="170"></canvas>
-          </div>
-
-          <!-- v-t -->
-          <div class="graph-block">
-            <div class="graph-block-hdr">
-              <span class="graph-block-title gt-vt">v-t 그래프 (속도-시간)</span>
-              <span class="graph-hint">기울기=가속도 · 넓이=변위</span>
-            </div>
-            <canvas id="cvs-vt" height="170"></canvas>
-          </div>
-
-          <!-- a-t -->
-          <div class="graph-block">
-            <div class="graph-block-hdr">
-              <span class="graph-block-title gt-at">a-t 그래프 (가속도-시간)</span>
-              <span class="graph-hint">넓이 = 속도 변화량</span>
-            </div>
-            <canvas id="cvs-at" height="120"></canvas>
-          </div>
-
-        </div>
-      </div>
+```
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">📈</div>
+      <div class="empty-text">값을 입력하고 그래프를 그려보세요</div>
     </div>
+
+    <div id="graphs-container" style="display:none; flex-direction:column; gap:10px;">
+
+      <!-- s-t -->
+      <div class="graph-block">
+        <div class="graph-block-hdr">
+          <span class="graph-block-title gt-st">s-t 그래프 (변위-시간)</span>
+          <span class="graph-hint">기울기 = 속도</span>
+        </div>
+        <canvas id="cvs-st" height="170"></canvas>
+      </div>
+
+      <!-- v-t -->
+      <div class="graph-block">
+        <div class="graph-block-hdr">
+          <span class="graph-block-title gt-vt">v-t 그래프 (속도-시간)</span>
+          <span class="graph-hint">기울기=가속도 · 넓이=변위</span>
+        </div>
+        <canvas id="cvs-vt" height="170"></canvas>
+      </div>
+
+      <!-- a-t -->
+      <div class="graph-block">
+        <div class="graph-block-hdr">
+          <span class="graph-block-title gt-at">a-t 그래프 (가속도-시간)</span>
+          <span class="graph-hint">넓이 = 속도 변화량</span>
+        </div>
+        <canvas id="cvs-at" height="120"></canvas>
+      </div>
+
+    </div>
+  </div>
+</div>
+```
+
   </div>
 
   <!-- ③ 분석 섹션 -->
+
   <div class="sec" id="sec-ana">
     <div class="acc-header" onclick="toggleAcc('ana')">
       <div class="acc-title">
@@ -467,91 +498,94 @@
     <div class="acc-body" id="body-ana">
       <div class="ana-inner">
 
-        <div class="empty-state" id="ana-empty" style="padding:24px 0;">
-          <div class="empty-text">그래프를 먼저 그려주세요</div>
+```
+    <div class="empty-state" id="ana-empty" style="padding:24px 0;">
+      <div class="empty-text">그래프를 먼저 그려주세요</div>
+    </div>
+
+    <div id="ana-content" style="display:none; flex-direction:column; gap:10px;">
+
+      <!-- 구간별 변위 -->
+      <div class="ana-card">
+        <div class="ana-card-title">구간별 변위</div>
+        <div id="seg-bars"></div>
+      </div>
+
+      <!-- 전체 요약 2컬럼 -->
+      <div class="ana-grid">
+        <div class="ana-card">
+          <div class="ana-card-title">변위 / 거리</div>
+          <div class="ana-row">
+            <span class="ana-key">총 변위</span>
+            <span class="ana-val green" id="ana-total-disp">—</span>
+          </div>
+          <div class="ana-row">
+            <span class="ana-key">이동거리</span>
+            <span class="ana-val accent" id="ana-total-dist">—</span>
+          </div>
         </div>
-
-        <div id="ana-content" style="display:none; flex-direction:column; gap:10px;">
-
-          <!-- 구간별 변위 -->
-          <div class="ana-card">
-            <div class="ana-card-title">구간별 변위</div>
-            <div id="seg-bars"></div>
+        <div class="ana-card">
+          <div class="ana-card-title">속도</div>
+          <div class="ana-row">
+            <span class="ana-key">최고</span>
+            <span class="ana-val green" id="ana-vmax">—</span>
           </div>
-
-          <!-- 전체 요약 2컬럼 -->
-          <div class="ana-grid">
-            <div class="ana-card">
-              <div class="ana-card-title">변위 / 거리</div>
-              <div class="ana-row">
-                <span class="ana-key">총 변위</span>
-                <span class="ana-val green" id="ana-total-disp">—</span>
-              </div>
-              <div class="ana-row">
-                <span class="ana-key">이동거리</span>
-                <span class="ana-val accent" id="ana-total-dist">—</span>
-              </div>
-            </div>
-            <div class="ana-card">
-              <div class="ana-card-title">속도</div>
-              <div class="ana-row">
-                <span class="ana-key">최고</span>
-                <span class="ana-val green" id="ana-vmax">—</span>
-              </div>
-              <div class="ana-row">
-                <span class="ana-key">최저</span>
-                <span class="ana-val red" id="ana-vmin">—</span>
-              </div>
-            </div>
-            <div class="ana-card">
-              <div class="ana-card-title">평균</div>
-              <div class="ana-row">
-                <span class="ana-key">속도</span>
-                <span class="ana-val yellow" id="ana-avg-v">—</span>
-              </div>
-              <div class="ana-row">
-                <span class="ana-key">속력</span>
-                <span class="ana-val yellow" id="ana-avg-spd">—</span>
-              </div>
-            </div>
-            <div class="ana-card">
-              <div class="ana-card-title">총 시간</div>
-              <div class="ana-row">
-                <span class="ana-key">시간</span>
-                <span class="ana-val accent" id="ana-total-t">—</span>
-              </div>
-            </div>
+          <div class="ana-row">
+            <span class="ana-key">최저</span>
+            <span class="ana-val red" id="ana-vmin">—</span>
           </div>
-
-          <!-- 방향 전환 -->
-          <div class="ana-card">
-            <div class="ana-card-title">방향 전환</div>
-            <div id="ana-turns-wrap">
-              <div class="ana-row">
-                <span class="ana-key">전환 없음</span>
-                <span class="ana-val sub">—</span>
-              </div>
-            </div>
+        </div>
+        <div class="ana-card">
+          <div class="ana-card-title">평균</div>
+          <div class="ana-row">
+            <span class="ana-key">속도</span>
+            <span class="ana-val yellow" id="ana-avg-v">—</span>
           </div>
-
-          <!-- 시각 조회 -->
-          <div class="ana-card">
-            <div class="ana-card-title">시각 조회</div>
-            <div class="query-input-row">
-              <label>t =</label>
-              <input type="number" id="query-t" inputmode="decimal" placeholder="0" step="0.1" oninput="updateQuery()">
-              <label>s 일 때</label>
-            </div>
-            <div id="query-results">
-              <div class="ana-row"><span class="ana-key">변위 s</span><span class="ana-val sub">—</span></div>
-              <div class="ana-row"><span class="ana-key">속도 v</span><span class="ana-val sub">—</span></div>
-              <div class="ana-row"><span class="ana-key">가속도 a</span><span class="ana-val sub">—</span></div>
-            </div>
+          <div class="ana-row">
+            <span class="ana-key">속력</span>
+            <span class="ana-val yellow" id="ana-avg-spd">—</span>
           </div>
-
+        </div>
+        <div class="ana-card">
+          <div class="ana-card-title">총 시간</div>
+          <div class="ana-row">
+            <span class="ana-key">시간</span>
+            <span class="ana-val accent" id="ana-total-t">—</span>
+          </div>
         </div>
       </div>
+
+      <!-- 방향 전환 -->
+      <div class="ana-card">
+        <div class="ana-card-title">방향 전환</div>
+        <div id="ana-turns-wrap">
+          <div class="ana-row">
+            <span class="ana-key">전환 없음</span>
+            <span class="ana-val sub">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 시각 조회 -->
+      <div class="ana-card">
+        <div class="ana-card-title">시각 조회</div>
+        <div class="query-input-row">
+          <label>t =</label>
+          <input type="number" id="query-t" inputmode="decimal" placeholder="0" step="0.1" oninput="updateQuery()">
+          <label>s 일 때</label>
+        </div>
+        <div id="query-results">
+          <div class="ana-row"><span class="ana-key">변위 s</span><span class="ana-val sub">—</span></div>
+          <div class="ana-row"><span class="ana-key">속도 v</span><span class="ana-val sub">—</span></div>
+          <div class="ana-row"><span class="ana-key">가속도 a</span><span class="ana-val sub">—</span></div>
+        </div>
+      </div>
+
     </div>
+  </div>
+</div>
+```
+
   </div>
 
   <div class="credit">조준현T</div>
@@ -585,13 +619,7 @@ function openAcc(key) {
   if (!accState[key]) toggleAcc(key);
 }
 
-// 초기 maxHeight 설정
-window.addEventListener('DOMContentLoaded', () => {
-  ['input','graph','ana'].forEach(key => {
-    const body = document.getElementById('body-' + key);
-    body.style.maxHeight = body.scrollHeight + 9999 + 'px';
-  });
-});
+// 아코디언 초기화는 DOMContentLoaded 내에서 처리됨
 
 // ═══════════════════════════════════════════
 //  데이터
@@ -599,10 +627,48 @@ window.addEventListener('DOMContentLoaded', () => {
 let simData = null;
 let segments = [];
 
+// 모바일(터치) 감지
+const isMobile = () => window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
+// 수치 읽기 (공통)
 function getNum(id) {
   const v = parseFloat(document.getElementById(id).value);
   return isNaN(v) ? null : v;
 }
+
+// ── PC: 마우스 휠로 입력 필드 스크롤 방지 + 화살표 1단위 고정 ──
+// step="1" 이 이미 설정되어 있으므로 wheel 이벤트만 막으면 됨
+document.addEventListener('DOMContentLoaded', () => {
+  const inputIds = ['s1-v0','s1-a','s1-t','s2-a','s2-t','s3-a','s3-t'];
+  inputIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    // 마우스 휠로 숫자가 변경되는 것 방지 (PC 브라우저 기본 동작)
+    el.addEventListener('wheel', e => { e.preventDefault(); }, { passive: false });
+
+    // 모바일: 키보드 입력 시 유효성 즉시 표시
+    el.addEventListener('input', () => {
+      const v = parseFloat(el.value);
+      el.classList.toggle('invalid', el.value !== '' && isNaN(v));
+    });
+  });
+
+  // query-t 필드도 휠 방지
+  const qt = document.getElementById('query-t');
+  if (qt) qt.addEventListener('wheel', e => e.preventDefault(), { passive: false });
+
+  // 모바일이면 입력 안내 표시
+  if (isMobile()) {
+    document.getElementById('mobile-tip').style.display = 'block';
+  }
+
+  // 아코디언 초기 높이
+  ['input','graph','ana'].forEach(key => {
+    const body = document.getElementById('body-' + key);
+    body.style.maxHeight = body.scrollHeight + 9999 + 'px';
+  });
+});
 
 // ═══════════════════════════════════════════
 //  실시간 v0 자동 계산
@@ -1065,5 +1131,6 @@ function r1(v){ return Math.round(v*10)/10; }
 
 window.addEventListener('resize',()=>{ if(simData) drawGraphs(); });
 </script>
+
 </body>
 </html>
