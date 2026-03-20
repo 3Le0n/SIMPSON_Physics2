@@ -2,835 +2,710 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>등가속도 운동 시뮬레이터</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:       #0a0c10;
-      --panel:    #111318;
-      --surface:  #181b22;
-      --border:   #23273a;
-      --border2:  #2e3347;
-      --accent:   #00d4ff;
-      --green:    #00e57a;
-      --yellow:   #ffd166;
-      --red:      #ff4d6d;
-      --purple:   #9b7fff;
-      --text:     #dde3f0;
-      --sub:      #6b7494;
-      --mono:     'IBM Plex Mono', monospace;
-      --sans:     'IBM Plex Sans KR', sans-serif;
-      --r:        10px;
+      --bg:      #0a0c10;
+      --panel:   #111318;
+      --surface: #181b22;
+      --border:  #23273a;
+      --border2: #2e3347;
+      --accent:  #00d4ff;
+      --green:   #00e57a;
+      --yellow:  #ffd166;
+      --red:     #ff4d6d;
+      --purple:  #9b7fff;
+      --text:    #dde3f0;
+      --sub:     #6b7494;
+      --mono:    'IBM Plex Mono', monospace;
+      --sans:    'IBM Plex Sans KR', sans-serif;
+      --r:       10px;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
+    html, body {
       font-family: var(--sans);
       background: var(--bg);
       color: var(--text);
-      height: 100vh;
-      display: grid;
-      grid-template-rows: 48px 1fr;
-      overflow: hidden;
+      min-height: 100vh;
+      -webkit-text-size-adjust: 100%;
     }
 
     /* ── 헤더 ── */
     header {
+      position: sticky; top: 0; z-index: 100;
       background: var(--panel);
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
-      z-index: 10;
+      padding: 0 16px;
+      height: 46px;
     }
-    header h1 {
-      font-size: 0.95em;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-    }
-    header h1 em {
-      font-style: normal;
-      color: var(--accent);
-    }
+    header h1 { font-size: 0.92em; font-weight: 600; }
+    header h1 em { font-style: normal; color: var(--accent); }
     .hdr-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 0.78em;
-      color: var(--sub);
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.72em; color: var(--sub);
       font-family: var(--mono);
     }
     .live-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
+      width: 6px; height: 6px; border-radius: 50%;
       background: var(--green);
       box-shadow: 0 0 6px var(--green);
       animation: pulse 2s infinite;
     }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
 
-    /* ── 메인 레이아웃 ── */
-    main {
-      display: grid;
-      grid-template-columns: 300px 1fr;
-      overflow: hidden;
-    }
-
-    /* ── 좌: 입력 패널 ── */
-    #input-panel {
-      background: var(--panel);
-      border-right: 1px solid var(--border);
-      overflow-y: auto;
-      padding: 16px 14px 24px;
+    /* ── 페이지 전체 스크롤 ── */
+    .page {
       display: flex;
       flex-direction: column;
-      gap: 14px;
-    }
-    #input-panel::-webkit-scrollbar { width: 4px; }
-    #input-panel::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-    .section-title {
-      font-size: 0.68em;
-      font-family: var(--mono);
-      color: var(--sub);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 2px;
+      gap: 0;
+      padding-bottom: 32px;
     }
 
-    /* 구간 카드 */
+    /* ── 섹션 공통 ── */
+    .sec {
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── 아코디언 헤더 ── */
+    .acc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      cursor: pointer;
+      user-select: none;
+      background: var(--panel);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .acc-header:active { background: var(--surface); }
+    .acc-title {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.8em; font-weight: 600;
+      font-family: var(--mono); text-transform: uppercase;
+      letter-spacing: 0.8px; color: var(--sub);
+    }
+    .acc-title .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+    }
+    .acc-chevron {
+      font-size: 0.7em; color: var(--sub);
+      transition: transform .22s;
+    }
+    .acc-chevron.open { transform: rotate(180deg); }
+    .acc-body {
+      overflow: hidden;
+      transition: max-height .28s ease;
+    }
+    .acc-body.collapsed { max-height: 0 !important; }
+    .acc-inner { padding: 0 12px 14px; }
+
+    /* ── 구간 카드 ── */
     .seg-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--r);
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      transition: border-color .2s;
+      padding: 11px 12px;
+      margin-bottom: 8px;
     }
-    .seg-card:focus-within { border-color: var(--border2); }
-
-    .seg-header {
-      display: flex;
-      align-items: center;
+    .seg-card:last-of-type { margin-bottom: 0; }
+    .seg-top {
+      display: flex; align-items: center;
       justify-content: space-between;
+      margin-bottom: 9px;
     }
-    .seg-label {
-      font-size: 0.78em;
-      font-family: var(--mono);
-      font-weight: 600;
+    .seg-name {
+      font-size: 0.75em; font-family: var(--mono); font-weight: 600;
     }
-    .seg-1 .seg-label { color: var(--accent); }
-    .seg-2 .seg-label { color: var(--yellow); }
-    .seg-3 .seg-label { color: var(--purple); }
-    .seg-time-badge {
-      font-size: 0.7em;
-      font-family: var(--mono);
-      color: var(--sub);
-      background: var(--border);
-      padding: 2px 8px;
-      border-radius: 4px;
+    .s1 .seg-name { color: var(--accent); }
+    .s2 .seg-name { color: var(--yellow); }
+    .s3 .seg-name { color: var(--purple); }
+    .seg-badge {
+      font-size: 0.65em; font-family: var(--mono);
+      color: var(--sub); background: var(--border);
+      padding: 2px 7px; border-radius: 4px;
     }
 
-    .field-row {
+    /* 3-컬럼 입력 */
+    .fields {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 7px;
-    }
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+      gap: 6px;
     }
     .field label {
-      font-size: 0.68em;
-      font-family: var(--mono);
-      color: var(--sub);
+      display: block;
+      font-size: 0.62em; font-family: var(--mono);
+      color: var(--sub); margin-bottom: 3px;
     }
     .field input {
+      width: 100%;
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 6px;
       color: var(--text);
       font-family: var(--mono);
-      font-size: 0.9em;
-      padding: 7px 9px;
+      font-size: 0.88em;
+      padding: 7px 8px;
       outline: none;
-      width: 100%;
+      -webkit-appearance: none;
       transition: border-color .18s;
     }
     .field input:focus { border-color: var(--accent); }
-    .field input[readonly] {
-      color: var(--sub);
-      cursor: not-allowed;
-      border-style: dashed;
-    }
-    .field input.auto { color: var(--accent); border-color: var(--border); }
+    .field input[readonly] { color: var(--accent); border-style: dashed; }
 
-    /* 구간 연속성 표시 */
-    .seg-connector {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0 4px;
+    /* 구간 연결 화살표 */
+    .seg-bridge {
+      display: flex; align-items: center; gap: 8px;
+      padding: 4px 4px;
+      font-size: 0.62em; font-family: var(--mono); color: var(--sub);
     }
-    .seg-connector-line {
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--border2), transparent);
-    }
-    .seg-connector span {
-      font-size: 0.68em;
-      font-family: var(--mono);
-      color: var(--sub);
-      white-space: nowrap;
-    }
+    .bridge-line { flex:1; height:1px; background: var(--border2); }
 
-    /* 버튼 */
+    /* 버튼들 */
+    .btn-row {
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 8px; padding: 12px 12px 0;
+    }
     .btn-run {
-      background: var(--accent);
-      color: #000;
-      border: none;
-      border-radius: var(--r);
-      padding: 11px;
-      font-family: var(--sans);
-      font-size: 0.9em;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      transition: opacity .15s, transform .1s;
-      letter-spacing: 0.2px;
+      background: var(--accent); color: #000;
+      border: none; border-radius: var(--r);
+      padding: 11px 14px;
+      font-family: var(--sans); font-size: 0.9em; font-weight: 600;
+      cursor: pointer; letter-spacing: 0.2px;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity .15s;
     }
-    .btn-run:hover { opacity: .88; }
-    .btn-run:active { transform: scale(.98); }
-
+    .btn-run:active { opacity: .8; }
     .btn-reset {
-      background: none;
-      border: 1px solid var(--border2);
-      color: var(--sub);
-      border-radius: var(--r);
-      padding: 8px;
-      font-family: var(--sans);
-      font-size: 0.82em;
+      background: none; border: 1px solid var(--border2);
+      color: var(--sub); border-radius: var(--r);
+      padding: 11px 14px;
+      font-family: var(--sans); font-size: 0.82em;
       cursor: pointer;
-      width: 100%;
-      transition: border-color .15s, color .15s;
+      -webkit-tap-highlight-color: transparent;
     }
-    .btn-reset:hover { border-color: var(--red); color: var(--red); }
+    .btn-reset:active { border-color: var(--red); color: var(--red); }
 
-    /* ── 우: 그래프 + 분석 ── */
-    #right-panel {
-      display: grid;
-      grid-template-columns: 1fr 220px;
-      overflow: hidden;
-    }
-
-    /* 그래프 영역 */
-    #graph-area {
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-      padding: 14px 14px 14px 16px;
-      gap: 10px;
-    }
-    #graph-area::-webkit-scrollbar { width: 4px; }
-    #graph-area::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+    /* ── 그래프 섹션 ── */
+    .graph-inner { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 10px; }
 
     .graph-block {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--r);
-      padding: 12px 14px 10px;
-      flex-shrink: 0;
+      padding: 10px 12px 8px;
     }
-    .graph-block-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
+    .graph-block-hdr {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 7px;
     }
-    .graph-title {
-      font-size: 0.72em;
-      font-family: var(--mono);
-      font-weight: 600;
+    .graph-block-title {
+      font-size: 0.72em; font-family: var(--mono); font-weight: 600;
     }
-    .gt-xt { color: var(--green); }
+    .gt-st { color: var(--green); }
     .gt-vt { color: var(--accent); }
     .gt-at { color: var(--yellow); }
+    .graph-hint { font-size: 0.6em; color: var(--sub); font-family: var(--mono); }
 
-    .graph-hint {
-      font-size: 0.65em;
-      font-family: var(--mono);
-      color: var(--sub);
-    }
-
-    canvas.graph-canvas {
-      display: block;
-      width: 100%;
-      border-radius: 4px;
-    }
+    canvas { display: block; width: 100%; }
 
     /* 빈 상태 */
     .empty-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      gap: 10px;
-      color: var(--sub);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px 0; gap: 10px; color: var(--sub);
     }
-    .empty-icon {
-      font-size: 2.5em;
-      opacity: .3;
-    }
-    .empty-text {
-      font-size: 0.82em;
-      font-family: var(--mono);
-    }
+    .empty-icon { font-size: 2.2em; opacity: .3; }
+    .empty-text { font-size: 0.78em; font-family: var(--mono); }
 
-    /* ── 분석 패널 ── */
-    #analysis-panel {
-      border-left: 1px solid var(--border);
-      background: var(--panel);
-      overflow-y: auto;
-      padding: 14px 12px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    #analysis-panel::-webkit-scrollbar { width: 3px; }
-    #analysis-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius:2px; }
+    /* ── 분석 섹션 ── */
+    .ana-inner { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 12px; }
 
-    .ana-block {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
+    .ana-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 12px;
+    }
+    .ana-card-title {
+      font-size: 0.64em; font-family: var(--mono);
+      color: var(--sub); text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 9px;
     }
     .ana-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 6px;
+      display: flex; justify-content: space-between;
+      align-items: baseline; gap: 8px;
+      padding: 3px 0;
     }
-    .ana-key {
-      font-size: 0.7em;
-      color: var(--sub);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .ana-val {
-      font-size: 0.82em;
-      font-family: var(--mono);
-      font-weight: 600;
-      text-align: right;
-    }
+    .ana-key { font-size: 0.75em; color: var(--sub); }
+    .ana-val { font-size: 0.82em; font-family: var(--mono); font-weight: 600; }
     .ana-val.green  { color: var(--green); }
     .ana-val.accent { color: var(--accent); }
     .ana-val.yellow { color: var(--yellow); }
     .ana-val.red    { color: var(--red); }
     .ana-val.purple { color: var(--purple); }
-
-    .ana-divider {
-      height: 1px;
-      background: var(--border);
-      margin: 2px 0;
-    }
+    .ana-val.sub    { color: var(--sub); }
 
     /* 구간별 변위 바 */
-    .seg-bar-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .seg-bar-row {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
+    .seg-bar-row { margin-bottom: 7px; }
+    .seg-bar-row:last-child { margin-bottom: 0; }
     .seg-bar-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.68em;
-      font-family: var(--mono);
+      display: flex; justify-content: space-between;
+      font-size: 0.68em; font-family: var(--mono); margin-bottom: 3px;
     }
     .seg-bar-track {
-      height: 5px;
-      background: var(--border);
-      border-radius: 3px;
-      overflow: hidden;
+      height: 5px; background: var(--border); border-radius: 3px; overflow: hidden;
     }
-    .seg-bar-fill {
-      height: 100%;
-      border-radius: 3px;
-      transition: width .4s ease;
+    .seg-bar-fill { height: 100%; border-radius: 3px; transition: width .4s ease; }
+
+    /* 분석 2컬럼 그리드 */
+    .ana-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
     }
+    .ana-grid .ana-card { padding: 10px; }
 
     /* 시각 조회 */
-    .query-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
     .query-input-row {
-      display: flex;
-      gap: 6px;
-      align-items: center;
+      display: flex; align-items: center; gap: 6px; margin-bottom: 9px;
     }
     .query-input-row label {
-      font-size: 0.68em;
-      font-family: var(--mono);
-      color: var(--sub);
-      white-space: nowrap;
+      font-size: 0.72em; font-family: var(--mono); color: var(--sub); white-space: nowrap;
     }
     .query-input-row input {
-      flex: 1;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 0.82em;
-      padding: 5px 8px;
-      outline: none;
-      min-width: 0;
+      flex: 1; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); font-family: var(--mono);
+      font-size: 0.9em; padding: 7px 9px; outline: none;
+      -webkit-appearance: none;
     }
     .query-input-row input:focus { border-color: var(--accent); }
-    .query-results {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-    .query-result-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.72em;
-    }
-    .query-result-row span:first-child { color: var(--sub); font-family: var(--mono); }
-    .query-result-row span:last-child  { font-family: var(--mono); font-weight: 600; }
-
-    /* 빈 분석 */
-    .ana-empty {
-      font-size: 0.72em;
-      font-family: var(--mono);
-      color: var(--sub);
-      text-align: center;
-      padding: 20px 0;
-    }
 
     /* 크레딧 */
     .credit {
-      font-size: 0.65em;
-      font-family: var(--mono);
-      color: var(--border2);
-      text-align: center;
-      margin-top: auto;
-      padding-top: 10px;
+      text-align: center; font-size: 0.65em;
+      font-family: var(--mono); color: var(--border2);
+      padding: 20px 0 4px;
     }
   </style>
 </head>
 <body>
 
-<!-- 헤더 -->
 <header>
   <h1>등가속도 운동 <em>시뮬레이터</em></h1>
   <div class="hdr-right">
     <div class="live-dot"></div>
-    <span>실시간 분석</span>
-    <span style="color:var(--border2)">|</span>
     <span>조준현T</span>
   </div>
 </header>
 
-<main>
-  <!-- 좌: 입력 패널 -->
-  <div id="input-panel">
-    <div class="section-title">운동 구간 설정</div>
+<div class="page">
 
-    <!-- 구간 1 -->
-    <div class="seg-card seg-1">
-      <div class="seg-header">
-        <span class="seg-label">SEGMENT 1</span>
-        <span class="seg-time-badge" id="time-badge-1">0 ~ ? s</span>
+  <!-- ① 입력 섹션 (아코디언) -->
+  <div class="sec" id="sec-input">
+    <div class="acc-header" onclick="toggleAcc('input')">
+      <div class="acc-title">
+        <div class="dot" style="background:var(--accent)"></div>
+        구간 설정
       </div>
-      <div class="field-row">
-        <div class="field">
-          <label>v₀ (m/s)</label>
-          <input type="number" id="s1-v0" placeholder="0" step="1">
-        </div>
-        <div class="field">
-          <label>a (m/s²)</label>
-          <input type="number" id="s1-a" placeholder="0" step="1">
-        </div>
-        <div class="field">
-          <label>Δt (s)</label>
-          <input type="number" id="s1-t" placeholder="3" step="1" min="1">
-        </div>
-      </div>
+      <span class="acc-chevron open" id="chev-input">▼</span>
     </div>
+    <div class="acc-body" id="body-input">
+      <div class="acc-inner">
 
-    <!-- 연결 표시 -->
-    <div class="seg-connector">
-      <div class="seg-connector-line"></div>
-      <span>v 연속</span>
-      <div class="seg-connector-line"></div>
-    </div>
-
-    <!-- 구간 2 -->
-    <div class="seg-card seg-2">
-      <div class="seg-header">
-        <span class="seg-label">SEGMENT 2</span>
-        <span class="seg-time-badge" id="time-badge-2">? ~ ? s</span>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>v₀ (자동)</label>
-          <input type="number" id="s2-v0" class="auto" readonly placeholder="—">
-        </div>
-        <div class="field">
-          <label>a (m/s²)</label>
-          <input type="number" id="s2-a" placeholder="0" step="1">
-        </div>
-        <div class="field">
-          <label>Δt (s)</label>
-          <input type="number" id="s2-t" placeholder="3" step="1" min="1">
-        </div>
-      </div>
-    </div>
-
-    <!-- 연결 표시 -->
-    <div class="seg-connector">
-      <div class="seg-connector-line"></div>
-      <span>v 연속</span>
-      <div class="seg-connector-line"></div>
-    </div>
-
-    <!-- 구간 3 -->
-    <div class="seg-card seg-3">
-      <div class="seg-header">
-        <span class="seg-label">SEGMENT 3</span>
-        <span class="seg-time-badge" id="time-badge-3">? ~ ? s</span>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>v₀ (자동)</label>
-          <input type="number" id="s3-v0" class="auto" readonly placeholder="—">
-        </div>
-        <div class="field">
-          <label>a (m/s²)</label>
-          <input type="number" id="s3-a" placeholder="0" step="1">
-        </div>
-        <div class="field">
-          <label>Δt (s)</label>
-          <input type="number" id="s3-t" placeholder="3" step="1" min="1">
-        </div>
-      </div>
-    </div>
-
-    <button class="btn-run" onclick="runSim()">▶ 그래프 그리기</button>
-    <button class="btn-reset" onclick="resetAll()">초기화</button>
-  </div>
-
-  <!-- 우: 그래프 + 분석 -->
-  <div id="right-panel">
-
-    <!-- 그래프 영역 -->
-    <div id="graph-area">
-      <div class="empty-state" id="empty-state">
-        <div class="empty-icon">📈</div>
-        <div class="empty-text">값을 입력하고 그래프를 그려보세요</div>
-      </div>
-
-      <div id="graphs-container" style="display:none; display:flex; flex-direction:column; gap:10px;">
-
-        <!-- s-t -->
-        <div class="graph-block">
-          <div class="graph-block-header">
-            <span class="graph-title gt-xt">s-t 그래프 (위치-시간)</span>
-            <span class="graph-hint">기울기 = 속도</span>
+        <!-- 구간 1 -->
+        <div class="seg-card s1">
+          <div class="seg-top">
+            <span class="seg-name">구간 1</span>
+            <span class="seg-badge" id="badge-1">0 ~ ? s</span>
           </div>
-          <canvas class="graph-canvas" id="cvs-xt" height="180"></canvas>
-        </div>
-
-        <!-- v-t -->
-        <div class="graph-block">
-          <div class="graph-block-header">
-            <span class="graph-title gt-vt">v-t 그래프 (속도-시간)</span>
-            <span class="graph-hint">기울기 = 가속도 / 넓이 = 변위</span>
-          </div>
-          <canvas class="graph-canvas" id="cvs-vt" height="180"></canvas>
-        </div>
-
-        <!-- a-t -->
-        <div class="graph-block">
-          <div class="graph-block-header">
-            <span class="graph-title gt-at">a-t 그래프 (가속도-시간)</span>
-            <span class="graph-hint">넓이 = 속도 변화량</span>
-          </div>
-          <canvas class="graph-canvas" id="cvs-at" height="130"></canvas>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- 분석 패널 -->
-    <div id="analysis-panel">
-      <div class="section-title">운동 분석</div>
-
-      <div id="ana-empty" class="ana-empty">그래프를 먼저<br>그려주세요</div>
-
-      <div id="ana-content" style="display:none; display:flex; flex-direction:column; gap:14px;">
-
-        <!-- 구간별 변위 -->
-        <div class="ana-block">
-          <div class="section-title">구간별 변위</div>
-          <div class="seg-bar-wrap" id="seg-bars"></div>
-        </div>
-
-        <div class="ana-divider"></div>
-
-        <!-- 전체 요약 -->
-        <div class="ana-block">
-          <div class="section-title">전체 요약</div>
-          <div class="ana-row">
-            <span class="ana-key">총 시간</span>
-            <span class="ana-val accent" id="ana-total-t">—</span>
-          </div>
-          <div class="ana-row">
-            <span class="ana-key">총 변위</span>
-            <span class="ana-val green" id="ana-total-disp">—</span>
-          </div>
-          <div class="ana-row">
-            <span class="ana-key">총 이동거리</span>
-            <span class="ana-val accent" id="ana-total-dist">—</span>
-          </div>
-          <div class="ana-row">
-            <span class="ana-key">평균 속도</span>
-            <span class="ana-val yellow" id="ana-avg-v">—</span>
-          </div>
-          <div class="ana-row">
-            <span class="ana-key">평균 속력</span>
-            <span class="ana-val yellow" id="ana-avg-spd">—</span>
-          </div>
-        </div>
-
-        <div class="ana-divider"></div>
-
-        <!-- 속도 극값 -->
-        <div class="ana-block">
-          <div class="section-title">속도 극값</div>
-          <div class="ana-row">
-            <span class="ana-key">최고 속도</span>
-            <span class="ana-val green" id="ana-vmax">—</span>
-          </div>
-          <div class="ana-row">
-            <span class="ana-key">최저 속도</span>
-            <span class="ana-val red" id="ana-vmin">—</span>
-          </div>
-        </div>
-
-        <div class="ana-divider"></div>
-
-        <!-- 방향 전환 -->
-        <div class="ana-block">
-          <div class="section-title">방향 전환</div>
-          <div id="ana-turns-wrap">
-            <div class="ana-row">
-              <span class="ana-key">전환 없음</span>
-              <span class="ana-val" style="color:var(--sub)">—</span>
+          <div class="fields">
+            <div class="field">
+              <label>v₀ (m/s)</label>
+              <input type="number" id="s1-v0" inputmode="decimal" placeholder="예) 0">
+            </div>
+            <div class="field">
+              <label>a (m/s²)</label>
+              <input type="number" id="s1-a" inputmode="decimal" placeholder="예) 2">
+            </div>
+            <div class="field">
+              <label>Δt (s)</label>
+              <input type="number" id="s1-t" inputmode="decimal" placeholder="예) 3" min="0.1">
             </div>
           </div>
         </div>
 
-        <div class="ana-divider"></div>
+        <div class="seg-bridge">
+          <div class="bridge-line"></div>
+          <span>↓ 속도 자동 연결</span>
+          <div class="bridge-line"></div>
+        </div>
 
-        <!-- 시각 조회 -->
-        <div class="ana-block">
-          <div class="section-title">시각 조회</div>
-          <div class="query-box">
+        <!-- 구간 2 -->
+        <div class="seg-card s2">
+          <div class="seg-top">
+            <span class="seg-name">구간 2</span>
+            <span class="seg-badge" id="badge-2">? ~ ? s</span>
+          </div>
+          <div class="fields">
+            <div class="field">
+              <label>v₀ (자동)</label>
+              <input type="number" id="s2-v0" readonly placeholder="—">
+            </div>
+            <div class="field">
+              <label>a (m/s²)</label>
+              <input type="number" id="s2-a" inputmode="decimal" placeholder="예) 0">
+            </div>
+            <div class="field">
+              <label>Δt (s)</label>
+              <input type="number" id="s2-t" inputmode="decimal" placeholder="예) 3" min="0.1">
+            </div>
+          </div>
+        </div>
+
+        <div class="seg-bridge">
+          <div class="bridge-line"></div>
+          <span>↓ 속도 자동 연결</span>
+          <div class="bridge-line"></div>
+        </div>
+
+        <!-- 구간 3 -->
+        <div class="seg-card s3">
+          <div class="seg-top">
+            <span class="seg-name">구간 3</span>
+            <span class="seg-badge" id="badge-3">? ~ ? s</span>
+          </div>
+          <div class="fields">
+            <div class="field">
+              <label>v₀ (자동)</label>
+              <input type="number" id="s3-v0" readonly placeholder="—">
+            </div>
+            <div class="field">
+              <label>a (m/s²)</label>
+              <input type="number" id="s3-a" inputmode="decimal" placeholder="예) -3">
+            </div>
+            <div class="field">
+              <label>Δt (s)</label>
+              <input type="number" id="s3-t" inputmode="decimal" placeholder="예) 3" min="0.1">
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-run" onclick="runSim()">▶ 그래프 그리기</button>
+          <button class="btn-reset" onclick="resetAll()">초기화</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 그래프 섹션 -->
+  <div class="sec" id="sec-graph">
+    <div class="acc-header" onclick="toggleAcc('graph')">
+      <div class="acc-title">
+        <div class="dot" style="background:var(--green)"></div>
+        그래프
+      </div>
+      <span class="acc-chevron open" id="chev-graph">▼</span>
+    </div>
+    <div class="acc-body" id="body-graph">
+      <div class="graph-inner">
+
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">📈</div>
+          <div class="empty-text">값을 입력하고 그래프를 그려보세요</div>
+        </div>
+
+        <div id="graphs-container" style="display:none; flex-direction:column; gap:10px;">
+
+          <!-- s-t -->
+          <div class="graph-block">
+            <div class="graph-block-hdr">
+              <span class="graph-block-title gt-st">s-t 그래프 (변위-시간)</span>
+              <span class="graph-hint">기울기 = 속도</span>
+            </div>
+            <canvas id="cvs-st" height="170"></canvas>
+          </div>
+
+          <!-- v-t -->
+          <div class="graph-block">
+            <div class="graph-block-hdr">
+              <span class="graph-block-title gt-vt">v-t 그래프 (속도-시간)</span>
+              <span class="graph-hint">기울기=가속도 · 넓이=변위</span>
+            </div>
+            <canvas id="cvs-vt" height="170"></canvas>
+          </div>
+
+          <!-- a-t -->
+          <div class="graph-block">
+            <div class="graph-block-hdr">
+              <span class="graph-block-title gt-at">a-t 그래프 (가속도-시간)</span>
+              <span class="graph-hint">넓이 = 속도 변화량</span>
+            </div>
+            <canvas id="cvs-at" height="120"></canvas>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 분석 섹션 -->
+  <div class="sec" id="sec-ana">
+    <div class="acc-header" onclick="toggleAcc('ana')">
+      <div class="acc-title">
+        <div class="dot" style="background:var(--yellow)"></div>
+        운동 분석
+      </div>
+      <span class="acc-chevron open" id="chev-ana">▼</span>
+    </div>
+    <div class="acc-body" id="body-ana">
+      <div class="ana-inner">
+
+        <div class="empty-state" id="ana-empty" style="padding:24px 0;">
+          <div class="empty-text">그래프를 먼저 그려주세요</div>
+        </div>
+
+        <div id="ana-content" style="display:none; flex-direction:column; gap:10px;">
+
+          <!-- 구간별 변위 -->
+          <div class="ana-card">
+            <div class="ana-card-title">구간별 변위</div>
+            <div id="seg-bars"></div>
+          </div>
+
+          <!-- 전체 요약 2컬럼 -->
+          <div class="ana-grid">
+            <div class="ana-card">
+              <div class="ana-card-title">변위 / 거리</div>
+              <div class="ana-row">
+                <span class="ana-key">총 변위</span>
+                <span class="ana-val green" id="ana-total-disp">—</span>
+              </div>
+              <div class="ana-row">
+                <span class="ana-key">이동거리</span>
+                <span class="ana-val accent" id="ana-total-dist">—</span>
+              </div>
+            </div>
+            <div class="ana-card">
+              <div class="ana-card-title">속도</div>
+              <div class="ana-row">
+                <span class="ana-key">최고</span>
+                <span class="ana-val green" id="ana-vmax">—</span>
+              </div>
+              <div class="ana-row">
+                <span class="ana-key">최저</span>
+                <span class="ana-val red" id="ana-vmin">—</span>
+              </div>
+            </div>
+            <div class="ana-card">
+              <div class="ana-card-title">평균</div>
+              <div class="ana-row">
+                <span class="ana-key">속도</span>
+                <span class="ana-val yellow" id="ana-avg-v">—</span>
+              </div>
+              <div class="ana-row">
+                <span class="ana-key">속력</span>
+                <span class="ana-val yellow" id="ana-avg-spd">—</span>
+              </div>
+            </div>
+            <div class="ana-card">
+              <div class="ana-card-title">총 시간</div>
+              <div class="ana-row">
+                <span class="ana-key">시간</span>
+                <span class="ana-val accent" id="ana-total-t">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 방향 전환 -->
+          <div class="ana-card">
+            <div class="ana-card-title">방향 전환</div>
+            <div id="ana-turns-wrap">
+              <div class="ana-row">
+                <span class="ana-key">전환 없음</span>
+                <span class="ana-val sub">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 시각 조회 -->
+          <div class="ana-card">
+            <div class="ana-card-title">시각 조회</div>
             <div class="query-input-row">
               <label>t =</label>
-              <input type="number" id="query-t" placeholder="0" step="0.1" oninput="updateQuery()">
-              <label>s</label>
+              <input type="number" id="query-t" inputmode="decimal" placeholder="0" step="0.1" oninput="updateQuery()">
+              <label>s 일 때</label>
             </div>
-            <div class="query-results" id="query-results">
-              <div class="query-result-row">
-                <span>위치 x</span>
-                <span style="color:var(--sub)">—</span>
-              </div>
-              <div class="query-result-row">
-                <span>속도 v</span>
-                <span style="color:var(--sub)">—</span>
-              </div>
-              <div class="query-result-row">
-                <span>가속도 a</span>
-                <span style="color:var(--sub)">—</span>
-              </div>
+            <div id="query-results">
+              <div class="ana-row"><span class="ana-key">변위 s</span><span class="ana-val sub">—</span></div>
+              <div class="ana-row"><span class="ana-key">속도 v</span><span class="ana-val sub">—</span></div>
+              <div class="ana-row"><span class="ana-key">가속도 a</span><span class="ana-val sub">—</span></div>
             </div>
           </div>
+
         </div>
-
       </div>
-
-      <div class="credit">조준현T</div>
     </div>
   </div>
-</main>
+
+  <div class="credit">조준현T</div>
+</div>
 
 <script>
 // ═══════════════════════════════════════════
-//  데이터 모델
+//  아코디언
 // ═══════════════════════════════════════════
-let simData = null; // 계산 결과 저장
+const accState = { input: true, graph: true, ana: true };
 
-// 구간 구조: { v0, a, dt, t_start, t_end, x_start, x_end, disp }
+function toggleAcc(key) {
+  accState[key] = !accState[key];
+  const body = document.getElementById('body-' + key);
+  const chev = document.getElementById('chev-' + key);
+  if (accState[key]) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    body.classList.remove('collapsed');
+    chev.classList.add('open');
+  } else {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    requestAnimationFrame(() => {
+      body.style.maxHeight = '0';
+      body.classList.add('collapsed');
+    });
+    chev.classList.remove('open');
+  }
+}
+
+function openAcc(key) {
+  if (!accState[key]) toggleAcc(key);
+}
+
+// 초기 maxHeight 설정
+window.addEventListener('DOMContentLoaded', () => {
+  ['input','graph','ana'].forEach(key => {
+    const body = document.getElementById('body-' + key);
+    body.style.maxHeight = body.scrollHeight + 9999 + 'px';
+  });
+});
+
+// ═══════════════════════════════════════════
+//  데이터
+// ═══════════════════════════════════════════
+let simData = null;
 let segments = [];
 
-// ═══════════════════════════════════════════
-//  입력 실시간 연산 (v0 자동)
-// ═══════════════════════════════════════════
 function getNum(id) {
   const v = parseFloat(document.getElementById(id).value);
   return isNaN(v) ? null : v;
 }
 
+// ═══════════════════════════════════════════
+//  실시간 v0 자동 계산
+// ═══════════════════════════════════════════
 function updateAutoV0() {
-  const v0_1 = getNum('s1-v0');
-  const a1   = getNum('s1-a');
-  const dt1  = getNum('s1-t');
-
-  // 구간2 v0 = v0_1 + a1*dt1
-  let v2 = null;
-  if (v0_1 !== null && a1 !== null && dt1 !== null) {
-    v2 = v0_1 + a1 * dt1;
-  }
-  const el2 = document.getElementById('s2-v0');
-  el2.value = v2 !== null ? round2(v2) : '';
-  el2.placeholder = v2 !== null ? '' : '—';
-
-  // 구간3 v0 = v2 + a2*dt2
-  const a2  = getNum('s2-a');
-  const dt2 = getNum('s2-t');
-  let v3 = null;
-  if (v2 !== null && a2 !== null && dt2 !== null) {
-    v3 = v2 + a2 * dt2;
-  }
-  const el3 = document.getElementById('s3-v0');
-  el3.value = v3 !== null ? round2(v3) : '';
-  el3.placeholder = v3 !== null ? '' : '—';
-
-  // 시간 배지 업데이트
-  const t1 = dt1 || 0;
-  const t2 = dt2 || 0;
-  const dt3 = getNum('s3-t') || 0;
-  document.getElementById('time-badge-1').textContent = `0 ~ ${t1}s`;
-  document.getElementById('time-badge-2').textContent = `${t1} ~ ${t1+t2}s`;
-  document.getElementById('time-badge-3').textContent = `${t1+t2} ~ ${t1+t2+dt3}s`;
-}
-
-// 입력 이벤트 연결
-['s1-v0','s1-a','s1-t','s2-a','s2-t','s3-a','s3-t'].forEach(id => {
-  document.getElementById(id).addEventListener('input', updateAutoV0);
-});
-
-// ═══════════════════════════════════════════
-//  시뮬레이션 실행
-// ═══════════════════════════════════════════
-function runSim() {
-  // 입력값 수집
   const v0_1 = getNum('s1-v0');
   const a1   = getNum('s1-a');
   const dt1  = getNum('s1-t');
   const a2   = getNum('s2-a');
   const dt2  = getNum('s2-t');
-  const a3   = getNum('s3-a');
   const dt3  = getNum('s3-t');
 
-  if ([v0_1,a1,dt1,a2,dt2,a3,dt3].some(v => v === null)) {
-    alert('모든 값을 입력해주세요.');
-    return;
+  let v2 = null, v3 = null;
+  if (v0_1 !== null && a1 !== null && dt1 !== null) v2 = v0_1 + a1*dt1;
+  if (v2   !== null && a2 !== null && dt2 !== null) v3 = v2   + a2*dt2;
+
+  const el2 = document.getElementById('s2-v0');
+  const el3 = document.getElementById('s3-v0');
+  el2.value = v2 !== null ? r2(v2) : '';
+  el3.value = v3 !== null ? r2(v3) : '';
+
+  const t1 = dt1 || 0, t2 = dt2 || 0, t3 = dt3 || 0;
+  document.getElementById('badge-1').textContent = `0 ~ ${r1(t1)}s`;
+  document.getElementById('badge-2').textContent = `${r1(t1)} ~ ${r1(t1+t2)}s`;
+  document.getElementById('badge-3').textContent = `${r1(t1+t2)} ~ ${r1(t1+t2+t3)}s`;
+}
+
+['s1-v0','s1-a','s1-t','s2-a','s2-t','s3-a','s3-t'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateAutoV0);
+});
+
+// ═══════════════════════════════════════════
+//  시뮬 실행
+// ═══════════════════════════════════════════
+function runSim() {
+  const v0_1=getNum('s1-v0'), a1=getNum('s1-a'), dt1=getNum('s1-t');
+  const                        a2=getNum('s2-a'), dt2=getNum('s2-t');
+  const                        a3=getNum('s3-a'), dt3=getNum('s3-t');
+
+  if ([v0_1,a1,dt1,a2,dt2,a3,dt3].some(v=>v===null)) {
+    alert('모든 값을 입력해주세요.'); return;
   }
-  if ([dt1,dt2,dt3].some(v => v <= 0)) {
-    alert('시간(Δt)은 양수여야 합니다.');
-    return;
+  if ([dt1,dt2,dt3].some(v=>v<=0)) {
+    alert('시간(Δt)은 양수여야 합니다.'); return;
   }
 
-  // 구간 계산
-  const v0_2 = v0_1 + a1*dt1;
-  const v0_3 = v0_2 + a2*dt2;
-
-  const t1s = 0, t1e = dt1;
-  const t2s = dt1, t2e = dt1+dt2;
-  const t3s = dt1+dt2, t3e = dt1+dt2+dt3;
-
-  const x0 = 0;
-  const x1 = x0 + disp(v0_1, a1, dt1);
-  const x2 = x1 + disp(v0_2, a2, dt2);
-  const x3 = x2 + disp(v0_3, a3, dt3);
+  const v0_2 = v0_1+a1*dt1, v0_3 = v0_2+a2*dt2;
+  const x0=0, x1=x0+dp(v0_1,a1,dt1), x2=x1+dp(v0_2,a2,dt2), x3=x2+dp(v0_3,a3,dt3);
 
   segments = [
-    { v0:v0_1, a:a1, dt:dt1, t_start:t1s, t_end:t1e, x_start:x0, x_end:x1, disp:x1-x0 },
-    { v0:v0_2, a:a2, dt:dt2, t_start:t2s, t_end:t2e, x_start:x1, x_end:x2, disp:x2-x1 },
-    { v0:v0_3, a:a3, dt:dt3, t_start:t3s, t_end:t3e, x_start:x2, x_end:x3, disp:x3-x2 },
+    {v0:v0_1,a:a1,dt:dt1,t_start:0,   t_end:dt1,      x_start:x0,x_end:x1,disp:x1-x0},
+    {v0:v0_2,a:a2,dt:dt2,t_start:dt1, t_end:dt1+dt2,  x_start:x1,x_end:x2,disp:x2-x1},
+    {v0:v0_3,a:a3,dt:dt3,t_start:dt1+dt2,t_end:dt1+dt2+dt3,x_start:x2,x_end:x3,disp:x3-x2},
   ];
 
-  // 고해상도 샘플 생성 (1000포인트)
   const tTotal = dt1+dt2+dt3;
-  const N = 600;
-  const pts = []; // {t, x, v, a}
-  for (let i=0; i<=N; i++) {
-    const t = (i/N)*tTotal;
-    pts.push(evalAt(t));
-  }
+  const pts = [];
+  for (let i=0;i<=600;i++) pts.push(evalAt((i/600)*tTotal));
 
-  // 방향 전환 탐지
-  const turns = findTurns();
+  simData = { segments, pts, tTotal, turns: findTurns() };
 
-  simData = { segments, pts, tTotal, totalDisp: x3-x0, turns };
+  // 그래프 표시
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('graphs-container').style.display = 'flex';
+  document.getElementById('ana-empty').style.display = 'none';
+  document.getElementById('ana-content').style.display = 'flex';
 
-  // 그래프 그리기
-  drawGraphs();
-  updateAnalysis();
-  showUI();
+  // 아코디언 maxHeight 갱신
+  ['input','graph','ana'].forEach(key => {
+    const body = document.getElementById('body-' + key);
+    if (accState[key]) body.style.maxHeight = body.scrollHeight + 9999 + 'px';
+  });
+
+  // 입력 아코디언 접기 (그래프로 자동 스크롤)
+  setTimeout(() => {
+    if (accState['input']) toggleAcc('input');
+    drawGraphs();
+    updateAnalysis();
+    setTimeout(() => {
+      document.getElementById('sec-graph').scrollIntoView({ behavior: 'smooth' });
+    }, 320);
+  }, 50);
 }
 
-function disp(v0, a, dt) {
-  return v0*dt + 0.5*a*dt*dt;
-}
+function dp(v0,a,dt) { return v0*dt + 0.5*a*dt*dt; }
 
 function evalAt(t) {
-  // 어느 구간에 속하는지
   let seg = segments[2];
-  for (const s of segments) {
-    if (t <= s.t_end + 1e-9) { seg = s; break; }
-  }
+  for (const s of segments) { if (t <= s.t_end+1e-9) { seg=s; break; } }
   const dt = t - seg.t_start;
-  const v = seg.v0 + seg.a*dt;
-  const x = seg.x_start + seg.v0*dt + 0.5*seg.a*dt*dt;
-  return { t, x, v, a: seg.a };
+  return { t, x: seg.x_start+seg.v0*dt+0.5*seg.a*dt*dt, v: seg.v0+seg.a*dt, a: seg.a };
 }
 
 function findTurns() {
   const turns = [];
   for (const seg of segments) {
-    // v0와 vEnd의 부호가 다르고 a≠0이면 구간 내 방향전환
-    const vEnd = seg.v0 + seg.a * seg.dt;
-    if (seg.a !== 0 && seg.v0 * vEnd < 0) {
-      const tTurn = seg.t_start + (-seg.v0 / seg.a);
-      const xTurn = evalAt(tTurn).x;
-      turns.push({ t: tTurn, x: xTurn, seg: seg });
+    const vEnd = seg.v0+seg.a*seg.dt;
+    if (seg.a!==0 && seg.v0*vEnd<0) {
+      const tT = seg.t_start+(-seg.v0/seg.a);
+      turns.push({ t:tT, x:evalAt(tT).x });
     }
-    // 구간 경계에서 v=0
-    if (seg.v0 === 0 && seg.a !== 0 && seg !== segments[0]) {
-      turns.push({ t: seg.t_start, x: seg.x_start, seg });
-    }
+    if (seg.v0===0 && seg.a!==0 && seg!==segments[0])
+      turns.push({ t:seg.t_start, x:seg.x_start });
   }
   return turns;
 }
@@ -838,476 +713,357 @@ function findTurns() {
 // ═══════════════════════════════════════════
 //  그래프 그리기
 // ═══════════════════════════════════════════
-const SEG_COLORS = ['#00d4ff','#ffd166','#9b7fff'];
-const C = {
-  bg:'#181b22', grid:'#1e2130',
-  axis:'#3a3f55', tick:'#5a6080',
-  zero:'#ff4d6d',
-  xt:'#00e57a', vt:'#00d4ff', at:'#ffd166',
-  fill_xt:'rgba(0,229,122,0.07)',
-  fill_vt:'rgba(0,212,255,0.07)',
-  fill_at:'rgba(255,209,102,0.07)',
-};
+const SC = ['#00d4ff','#ffd166','#9b7fff'];
+const BG = '#181b22';
+const GRID = '#1e2130';
+const AX   = '#3a3f55';
+const TICK = '#5a6080';
+const ZERO = '#ff4d6d';
 
-function setCanvasSize(cvs) {
-  const rect = cvs.parentElement.getBoundingClientRect();
+function prepCanvas(id, cssH) {
+  const cvs = document.getElementById(id);
   const dpr = window.devicePixelRatio || 1;
-  const w = Math.floor(rect.width - 28); // padding
-  cvs.width  = w * dpr;
-  cvs.style.width = w + 'px';
-  cvs.height = parseInt(cvs.getAttribute('height')) * dpr;
-  cvs.style.height = cvs.getAttribute('height') + 'px';
-  cvs.getContext('2d').scale(dpr, dpr);
-  return { w, h: parseInt(cvs.getAttribute('height')) };
+  const W   = cvs.parentElement.clientWidth - 24; // inner padding
+  cvs.style.width  = W + 'px';
+  cvs.style.height = cssH + 'px';
+  cvs.width  = Math.round(W * dpr);
+  cvs.height = Math.round(cssH * dpr);
+  const ctx = cvs.getContext('2d');
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.scale(dpr, dpr);
+  return { ctx, W, H: cssH };
 }
 
 function drawGraphs() {
   if (!simData) return;
-  drawXT();
+  drawST();
   drawVT();
   drawAT();
 }
 
-function getGraphDims(cvsId) {
-  const cvs = document.getElementById(cvsId);
-  const { w, h } = setCanvasSize(cvs);
-  const ctx = cvs.getContext('2d');
-  const px=46, py=14, pr=10, pb=28;
-  const gW = w - px - pr;
-  const gH = h - py - pb;
-  return { cvs, ctx, w, h, px, py, pr, pb, gW, gH };
-}
+// ── s-t 그래프 ──
+function drawST() {
+  const { ctx, W, H } = prepCanvas('cvs-st', 170);
+  ctx.fillStyle=BG; ctx.fillRect(0,0,W,H);
 
-// s-t 그래프
-function drawXT() {
-  const { cvs, ctx, w, h, px, py, pr, pb, gW, gH } = getGraphDims('cvs-xt');
-  ctx.fillStyle = C.bg; ctx.fillRect(0,0,w,h);
+  const px=46,py=14,pr=10,pb=26;
+  const gW=W-px-pr, gH=H-py-pb;
+  const tT=simData.tTotal;
 
-  const pts = simData.pts;
-  const xs = pts.map(p=>p.x);
-  const xMax = Math.max(...xs), xMin = Math.min(...xs);
-  const tTotal = simData.tTotal;
+  const allS = simData.pts.map(p=>p.x);
+  const sMax=Math.max(...allS), sMin=Math.min(...allS);
+  const pad=Math.max((sMax-sMin)*0.12,1);
+  const yMax=sMax+pad, yMin=sMin-pad;
 
-  const pad = Math.max(Math.abs(xMax-xMin)*0.12, 1);
-  const yMax = xMax+pad, yMin = xMin-pad;
+  const toX=t=>px+(t/tT)*gW;
+  const toY=s=>py+gH-((s-yMin)/(yMax-yMin))*gH;
 
-  const toX = t  => px + (t/tTotal)*gW;
-  const toY = xv => py + gH - ((xv-yMin)/(yMax-yMin))*gH;
+  drawGrid(ctx,W,H,px,py,pr,pb,gW,gH,tT,yMin,yMax,'s(m)');
+  if(yMin<0&&yMax>0) zeroLine(ctx,toY(0),px,W-pr);
 
-  drawGridAndAxes(ctx, w, h, px, py, pr, pb, gW, gH, tTotal, yMin, yMax, 'x(m)');
-
-  // x=0 기준선
-  if (yMin < 0 && yMax > 0) drawZeroLine(ctx, toY(0), px, w-pr);
-
-  // 구간별 채우기 + 선
-  segments.forEach((seg, si) => {
-    const t0 = seg.t_start, t1 = seg.t_end;
-    const N2 = 60;
-    const segPts = [];
-    for (let i=0;i<=N2;i++) {
-      const t = t0 + (i/N2)*(t1-t0);
-      const xv = seg.x_start + seg.v0*(t-t0) + 0.5*seg.a*(t-t0)**2;
-      segPts.push({t, xv});
+  segments.forEach((seg,si)=>{
+    const pts=[];
+    for(let i=0;i<=80;i++){
+      const t=seg.t_start+(i/80)*seg.dt;
+      pts.push({t,s:seg.x_start+seg.v0*(t-seg.t_start)+0.5*seg.a*(t-seg.t_start)**2});
     }
-    // 채우기 (y=0 또는 yMin 기준)
-    const fillY = yMin < 0 && yMax > 0 ? toY(0) : py+gH;
-    ctx.fillStyle = SEG_COLORS[si]+'18';
+    const fillY=yMin<0&&yMax>0?toY(0):py+gH;
+    ctx.fillStyle=SC[si]+'18';
     ctx.beginPath();
-    ctx.moveTo(toX(segPts[0].t), fillY);
-    segPts.forEach(p => ctx.lineTo(toX(p.t), toY(p.xv)));
-    ctx.lineTo(toX(segPts[N2].t), fillY);
+    ctx.moveTo(toX(pts[0].t),fillY);
+    pts.forEach(p=>ctx.lineTo(toX(p.t),toY(p.s)));
+    ctx.lineTo(toX(pts[80].t),fillY);
     ctx.closePath(); ctx.fill();
-    // 선
-    ctx.strokeStyle = SEG_COLORS[si];
-    ctx.lineWidth = 2.2;
+
+    ctx.strokeStyle=SC[si]; ctx.lineWidth=2.2;
     ctx.beginPath();
-    segPts.forEach((p,i) => i===0 ? ctx.moveTo(toX(p.t),toY(p.xv)) : ctx.lineTo(toX(p.t),toY(p.xv)));
+    pts.forEach((p,i)=>i===0?ctx.moveTo(toX(p.t),toY(p.s)):ctx.lineTo(toX(p.t),toY(p.s)));
     ctx.stroke();
   });
 
-  // 구간 경계 점선
-  drawSegDividers(ctx, segments, toX, py, h-pb, gH);
-
-  // 방향 전환점 마커
-  simData.turns.forEach(tr => {
-    drawMarker(ctx, toX(tr.t), toY(tr.x), C.zero, `t=${round2(tr.t)}s`);
-  });
-
-  // 초기 x=0 레이블
-  ctx.fillStyle = C.tick; ctx.font = '10px IBM Plex Mono, monospace';
-  ctx.fillText('0', px-12, toY(0)+3);
+  segDividers(ctx,toX,py,H-pb);
+  simData.turns.forEach(tr=>marker(ctx,toX(tr.t),toY(tr.x),ZERO,`t=${r2(tr.t)}s`));
+  // s=0 레이블
+  if(yMin<=0&&yMax>=0){
+    ctx.fillStyle=TICK; ctx.font='9px IBM Plex Mono,monospace';
+    ctx.fillText('0',px-12,toY(0)+3);
+  }
 }
 
-// v-t 그래프
+// ── v-t 그래프 ──
 function drawVT() {
-  const { cvs, ctx, w, h, px, py, pr, pb, gW, gH } = getGraphDims('cvs-vt');
-  ctx.fillStyle = C.bg; ctx.fillRect(0,0,w,h);
+  const { ctx, W, H } = prepCanvas('cvs-vt', 170);
+  ctx.fillStyle=BG; ctx.fillRect(0,0,W,H);
 
-  const pts = simData.pts;
-  const vs = pts.map(p=>p.v);
-  const vMax = Math.max(...vs), vMin = Math.min(...vs);
-  const tTotal = simData.tTotal;
+  const px=46,py=14,pr=10,pb=26;
+  const gW=W-px-pr, gH=H-py-pb;
+  const tT=simData.tTotal;
 
-  const pad = Math.max(Math.abs(vMax-vMin)*0.15, 1);
-  const yMax = vMax+pad, yMin = vMin-pad;
+  const allV=simData.pts.map(p=>p.v);
+  const vMax=Math.max(...allV),vMin=Math.min(...allV);
+  const pad=Math.max((vMax-vMin)*0.15,1);
+  const yMax=vMax+pad, yMin=vMin-pad;
 
-  const toX = t  => px + (t/tTotal)*gW;
-  const toY = v  => py + gH - ((v-yMin)/(yMax-yMin))*gH;
+  const toX=t=>px+(t/tT)*gW;
+  const toY=v=>py+gH-((v-yMin)/(yMax-yMin))*gH;
 
-  drawGridAndAxes(ctx, w, h, px, py, pr, pb, gW, gH, tTotal, yMin, yMax, 'v(m/s)');
+  drawGrid(ctx,W,H,px,py,pr,pb,gW,gH,tT,yMin,yMax,'v(m/s)');
+  if(yMin<0&&yMax>0) zeroLine(ctx,toY(0),px,W-pr);
 
-  // v=0 기준선
-  if (yMin < 0 && yMax > 0) drawZeroLine(ctx, toY(0), px, w-pr);
+  segments.forEach((seg,si)=>{
+    const vS=seg.v0, vE=seg.v0+seg.a*seg.dt;
+    const fillY=yMin<0&&yMax>0?toY(0):py+gH;
+    const hasCross=vS*vE<0&&seg.a!==0;
 
-  // 구간별 채우기+선
-  segments.forEach((seg, si) => {
-    const t0=seg.t_start, t1=seg.t_end;
-    const vStart = seg.v0;
-    const vEnd   = seg.v0 + seg.a*seg.dt;
-    const fillY  = yMin < 0 && yMax > 0 ? toY(0) : py+gH;
-
-    // v=0 교점이 있으면 두 삼각형으로 분리
-    const hasCross = vStart*vEnd < 0 && seg.a !== 0;
-    if (hasCross) {
-      const tCross = t0 + (-seg.v0/seg.a);
-      // 앞부분
-      ctx.fillStyle = SEG_COLORS[si]+'22';
+    if(hasCross){
+      const tC=seg.t_start+(-seg.v0/seg.a);
+      ctx.fillStyle=SC[si]+'22';
       ctx.beginPath();
-      ctx.moveTo(toX(t0), fillY); ctx.lineTo(toX(t0),toY(vStart));
-      ctx.lineTo(toX(tCross),toY(0)); ctx.lineTo(toX(tCross),fillY);
-      ctx.closePath(); ctx.fill();
-      // 뒷부분
+      ctx.moveTo(toX(seg.t_start),fillY);ctx.lineTo(toX(seg.t_start),toY(vS));
+      ctx.lineTo(toX(tC),toY(0));ctx.lineTo(toX(tC),fillY);
+      ctx.closePath();ctx.fill();
       ctx.beginPath();
-      ctx.moveTo(toX(tCross),fillY); ctx.lineTo(toX(tCross),toY(0));
-      ctx.lineTo(toX(t1),toY(vEnd)); ctx.lineTo(toX(t1),fillY);
-      ctx.closePath(); ctx.fill();
+      ctx.moveTo(toX(tC),fillY);ctx.lineTo(toX(tC),toY(0));
+      ctx.lineTo(toX(seg.t_end),toY(vE));ctx.lineTo(toX(seg.t_end),fillY);
+      ctx.closePath();ctx.fill();
     } else {
-      ctx.fillStyle = SEG_COLORS[si]+'18';
+      ctx.fillStyle=SC[si]+'18';
       ctx.beginPath();
-      ctx.moveTo(toX(t0),fillY); ctx.lineTo(toX(t0),toY(vStart));
-      ctx.lineTo(toX(t1),toY(vEnd)); ctx.lineTo(toX(t1),fillY);
-      ctx.closePath(); ctx.fill();
+      ctx.moveTo(toX(seg.t_start),fillY);ctx.lineTo(toX(seg.t_start),toY(vS));
+      ctx.lineTo(toX(seg.t_end),toY(vE));ctx.lineTo(toX(seg.t_end),fillY);
+      ctx.closePath();ctx.fill();
     }
-
-    // 직선 (v-t는 각 구간이 직선)
-    ctx.strokeStyle = SEG_COLORS[si];
-    ctx.lineWidth = 2.2;
-    ctx.beginPath();
-    ctx.moveTo(toX(t0),toY(vStart));
-    ctx.lineTo(toX(t1),toY(vEnd));
-    ctx.stroke();
+    ctx.strokeStyle=SC[si];ctx.lineWidth=2.2;
+    ctx.beginPath();ctx.moveTo(toX(seg.t_start),toY(vS));ctx.lineTo(toX(seg.t_end),toY(vE));ctx.stroke();
 
     // v0 레이블
-    ctx.fillStyle = SEG_COLORS[si];
-    ctx.font = '10px IBM Plex Mono, monospace';
-    ctx.fillText(round2(vStart), px-38, toY(vStart)+3);
+    ctx.fillStyle=SC[si];ctx.font='9px IBM Plex Mono,monospace';
+    ctx.fillText(r2(vS),px-38,toY(vS)+3);
   });
-  // 마지막 구간 vEnd 레이블
-  const lastSeg = segments[2];
-  const vEnd3 = lastSeg.v0 + lastSeg.a*lastSeg.dt;
-  ctx.fillStyle = SEG_COLORS[2];
-  ctx.font = '10px IBM Plex Mono, monospace';
-  ctx.fillText(round2(vEnd3), px-38, getGraphDims('cvs-vt').toY ? 0 : 0);
-  // (재계산)
-  {
-    const yMin2 = Math.min(...pts.map(p=>p.v)) - 1;
-    const yMax2 = Math.max(...pts.map(p=>p.v)) + 1;
-    const toY2 = v => py + gH - ((v-yMin2)/(yMax2-yMin2))*gH;
-    ctx.fillText(round2(vEnd3), px-38, toY2(vEnd3)+3);
-  }
+  // 마지막 vEnd
+  const ls=segments[2];
+  const vE3=ls.v0+ls.a*ls.dt;
+  const yMin2=vMin-pad,yMax2=vMax+pad;
+  const toY2=v=>py+gH-((v-yMin2)/(yMax2-yMin2))*gH;
+  ctx.fillStyle=SC[2];ctx.font='9px IBM Plex Mono,monospace';
+  ctx.fillText(r2(vE3),px-38,toY2(vE3)+3);
 
-  // 구간 경계 점선
-  drawSegDividers(ctx, segments, toX, py, h-pb, gH);
-
-  // 방향 전환점
-  simData.turns.forEach(tr => {
-    const v = evalAt(tr.t).v;
-    const yMin2 = vMin-pad, yMax2 = vMax+pad;
-    const toY2  = v2 => py+gH-((v2-yMin2)/(yMax2-yMin2))*gH;
-    drawMarker(ctx, toX(tr.t), toY2(0), C.zero, `t=${round2(tr.t)}s`);
+  segDividers(ctx,toX,py,H-pb);
+  simData.turns.forEach(tr=>{
+    const toYt=v=>py+gH-((v-yMin-pad)/(yMax+pad-yMin-pad))*gH;
+    marker(ctx,toX(tr.t),toY(0),ZERO,`t=${r2(tr.t)}s`);
   });
 }
 
-// a-t 그래프
+// ── a-t 그래프 ──
 function drawAT() {
-  const { cvs, ctx, w, h, px, py, pr, pb, gW, gH } = getGraphDims('cvs-at');
-  ctx.fillStyle = C.bg; ctx.fillRect(0,0,w,h);
+  const { ctx, W, H } = prepCanvas('cvs-at', 120);
+  ctx.fillStyle=BG; ctx.fillRect(0,0,W,H);
 
-  const aVals = segments.map(s=>s.a);
-  const aMax = Math.max(...aVals, 0)+1, aMin = Math.min(...aVals, 0)-1;
-  const tTotal = simData.tTotal;
+  const px=46,py=12,pr=10,pb=24;
+  const gW=W-px-pr, gH=H-py-pb;
+  const tT=simData.tTotal;
 
-  const toX = t => px + (t/tTotal)*gW;
-  const toY = a => py + gH - ((a-aMin)/(aMax-aMin))*gH;
+  const aVals=segments.map(s=>s.a);
+  const aMax=Math.max(...aVals,0)+1, aMin=Math.min(...aVals,0)-1;
+  const toX=t=>px+(t/tT)*gW;
+  const toY=a=>py+gH-((a-aMin)/(aMax-aMin))*gH;
 
-  drawGridAndAxes(ctx, w, h, px, py, pr, pb, gW, gH, tTotal, aMin, aMax, 'a(m/s²)');
-  if (aMin < 0 && aMax > 0) drawZeroLine(ctx, toY(0), px, w-pr);
+  drawGrid(ctx,W,H,px,py,pr,pb,gW,gH,tT,aMin,aMax,'a(m/s²)');
+  if(aMin<0&&aMax>0) zeroLine(ctx,toY(0),px,W-pr);
 
-  // 구간별 수평선
-  segments.forEach((seg, si) => {
-    const t0=seg.t_start, t1=seg.t_end;
-    const ya = toY(seg.a);
-    const fillY = aMin < 0 && aMax > 0 ? toY(0) : py+gH;
-
-    ctx.fillStyle = SEG_COLORS[si]+'22';
-    ctx.fillRect(toX(t0), Math.min(ya,fillY), toX(t1)-toX(t0), Math.abs(ya-fillY));
-
-    ctx.strokeStyle = SEG_COLORS[si];
-    ctx.lineWidth = 2.2;
-    ctx.beginPath();
-    ctx.moveTo(toX(t0), ya); ctx.lineTo(toX(t1), ya);
-    ctx.stroke();
-
-    // 수직 점선 (구간 경계)
-    ctx.strokeStyle = SEG_COLORS[si]+'66';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([3,3]);
-    ctx.beginPath(); ctx.moveTo(toX(t0),ya); ctx.lineTo(toX(t0),fillY); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(toX(t1),ya); ctx.lineTo(toX(t1),fillY); ctx.stroke();
+  segments.forEach((seg,si)=>{
+    const ya=toY(seg.a);
+    const fillY=aMin<0&&aMax>0?toY(0):py+gH;
+    ctx.fillStyle=SC[si]+'22';
+    ctx.fillRect(toX(seg.t_start),Math.min(ya,fillY),toX(seg.t_end)-toX(seg.t_start),Math.abs(ya-fillY));
+    ctx.strokeStyle=SC[si];ctx.lineWidth=2.2;
+    ctx.beginPath();ctx.moveTo(toX(seg.t_start),ya);ctx.lineTo(toX(seg.t_end),ya);ctx.stroke();
+    // 수직 점선
+    ctx.strokeStyle=SC[si]+'55';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(toX(seg.t_start),ya);ctx.lineTo(toX(seg.t_start),fillY);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(toX(seg.t_end),ya);ctx.lineTo(toX(seg.t_end),fillY);ctx.stroke();
     ctx.setLineDash([]);
-
-    // a 레이블
-    ctx.fillStyle = SEG_COLORS[si];
-    ctx.font = '10px IBM Plex Mono, monospace';
-    ctx.fillText(round2(seg.a), px-36, ya+3);
+    ctx.fillStyle=SC[si];ctx.font='9px IBM Plex Mono,monospace';
+    ctx.fillText(r2(seg.a),px-36,ya+3);
   });
-
-  drawSegDividers(ctx, segments, toX, py, h-pb, gH);
+  segDividers(ctx,toX,py,H-pb);
 }
 
-// ── 공통 그리기 함수들 ──────────────────────
-
-function drawGridAndAxes(ctx, w, h, px, py, pr, pb, gW, gH, tTotal, yMin, yMax, yLabel) {
-  // 눈금 수 자동
-  const nT = Math.min(tTotal, 12);
-  const nY = 5;
-
-  ctx.strokeStyle = C.grid; ctx.lineWidth = 0.6;
-  // 수직 그리드 (시간)
-  for (let i=0; i<=nT; i++) {
-    const t = (i/nT)*tTotal;
-    const x = px + (t/tTotal)*gW;
-    ctx.beginPath(); ctx.moveTo(x, py-4); ctx.lineTo(x, h-pb+4); ctx.stroke();
-    if (i>0 && i<nT) {
-      ctx.fillStyle = C.tick; ctx.font = '9px IBM Plex Mono, monospace';
-      ctx.fillText(round1(t), x-8, h-pb+14);
-    }
+// ── 공통 ──
+function drawGrid(ctx,W,H,px,py,pr,pb,gW,gH,tT,yMin,yMax,yLbl){
+  const nT=Math.min(Math.ceil(tT),12);
+  ctx.strokeStyle=GRID;ctx.lineWidth=0.6;
+  for(let i=0;i<=nT;i++){
+    const t=(i/nT)*tT;
+    const x=px+(t/tT)*gW;
+    ctx.beginPath();ctx.moveTo(x,py-4);ctx.lineTo(x,H-pb+4);ctx.stroke();
+    ctx.fillStyle=TICK;ctx.font='9px IBM Plex Mono,monospace';
+    if(i===0||i===nT) ctx.fillText(r1(t),x-(i===nT?8:4),H-pb+13);
+    else if(nT<=10)   ctx.fillText(r1(t),x-5,H-pb+13);
   }
-  // 수평 그리드 (y값)
-  for (let i=0; i<=nY; i++) {
-    const yv = yMin + (i/nY)*(yMax-yMin);
-    const y  = py + gH - (i/nY)*gH;
-    ctx.beginPath(); ctx.moveTo(px-3, y); ctx.lineTo(w-pr+3, y); ctx.stroke();
-    ctx.fillStyle = C.tick; ctx.font = '9px IBM Plex Mono, monospace';
-    const label = Number.isInteger(yv) ? yv : yv.toFixed(1);
-    ctx.fillText(label, 2, y+3);
+  const nY=4;
+  for(let i=0;i<=nY;i++){
+    const yv=yMin+(i/nY)*(yMax-yMin);
+    const y=py+gH-(i/nY)*gH;
+    ctx.strokeStyle=GRID;ctx.beginPath();ctx.moveTo(px-3,y);ctx.lineTo(W-pr+3,y);ctx.stroke();
+    ctx.fillStyle=TICK;ctx.font='9px IBM Plex Mono,monospace';
+    const lbl=Math.abs(yv)<100?r1(yv):Math.round(yv);
+    ctx.fillText(lbl,2,y+3);
   }
-
-  // 축
-  ctx.strokeStyle = C.axis; ctx.lineWidth = 1.4;
-  ctx.beginPath(); ctx.moveTo(px, py-6); ctx.lineTo(px, h-pb+6); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(px-6, h-pb); ctx.lineTo(w-pr+6, h-pb); ctx.stroke();
-
-  // 화살표
-  ctx.fillStyle = C.axis;
-  drawArrow(ctx, px, py-6, 'up');
-  drawArrow(ctx, w-pr+6, h-pb, 'right');
-
-  // 축 레이블
-  ctx.fillStyle = C.tick; ctx.font = '10px IBM Plex Mono, monospace';
-  ctx.fillText('t(s)', w-pr+4, h-pb+4);
-  ctx.fillText(yLabel, px+4, py-8);
-
-  // t=0, tTotal
-  ctx.fillStyle = C.tick; ctx.font = '9px IBM Plex Mono, monospace';
-  ctx.fillText('0', px-8, h-pb+14);
-  ctx.fillText(round1(tTotal), px+(tTotal/tTotal)*gW-8, h-pb+14);
+  ctx.strokeStyle=AX;ctx.lineWidth=1.4;
+  ctx.beginPath();ctx.moveTo(px,py-6);ctx.lineTo(px,H-pb+6);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(px-6,H-pb);ctx.lineTo(W-pr+6,H-pb);ctx.stroke();
+  ctx.fillStyle=AX;
+  arrow(ctx,px,py-6,'up'); arrow(ctx,W-pr+6,H-pb,'right');
+  ctx.fillStyle=TICK;ctx.font='10px IBM Plex Mono,monospace';
+  ctx.fillText('t(s)',W-pr+4,H-pb+4);
+  ctx.fillText(yLbl,px+4,py-8);
 }
-
-function drawArrow(ctx, x, y, dir) {
+function arrow(ctx,x,y,d){
   ctx.beginPath();
-  if (dir==='up')    { ctx.moveTo(x-4,y+7); ctx.lineTo(x,y); ctx.lineTo(x+4,y+7); }
-  if (dir==='right') { ctx.moveTo(x-7,y-4); ctx.lineTo(x,y); ctx.lineTo(x-7,y+4); }
+  if(d==='up')    {ctx.moveTo(x-4,y+7);ctx.lineTo(x,y);ctx.lineTo(x+4,y+7);}
+  if(d==='right') {ctx.moveTo(x-7,y-4);ctx.lineTo(x,y);ctx.lineTo(x-7,y+4);}
   ctx.stroke();
 }
-
-function drawZeroLine(ctx, y, x0, x1) {
-  ctx.strokeStyle = C.zero+'88';
-  ctx.lineWidth = 0.8;
-  ctx.setLineDash([4,4]);
-  ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.stroke();
+function zeroLine(ctx,y,x0,x1){
+  ctx.strokeStyle=ZERO+'77';ctx.lineWidth=0.8;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(x0,y);ctx.lineTo(x1,y);ctx.stroke();
   ctx.setLineDash([]);
 }
-
-function drawSegDividers(ctx, segs, toX, py, yBottom, gH) {
-  // 구간 경계 수직 점선
-  [segs[0].t_end, segs[1].t_end].forEach((t, si) => {
-    ctx.strokeStyle = SEG_COLORS[si+1]+'55';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4,4]);
-    ctx.beginPath(); ctx.moveTo(toX(t), py); ctx.lineTo(toX(t), yBottom); ctx.stroke();
+function segDividers(ctx,toX,py,yB){
+  [segments[0].t_end,segments[1].t_end].forEach((t,si)=>{
+    ctx.strokeStyle=SC[si+1]+'44';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(toX(t),py);ctx.lineTo(toX(t),yB);ctx.stroke();
     ctx.setLineDash([]);
   });
 }
-
-function drawMarker(ctx, x, y, color, label) {
-  ctx.fillStyle = color;
-  ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = color;
-  ctx.font = '9px IBM Plex Mono, monospace';
-  ctx.fillText(label, x+6, y-4);
+function marker(ctx,x,y,color,lbl){
+  ctx.fillStyle=color;
+  ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=color;ctx.font='9px IBM Plex Mono,monospace';
+  ctx.fillText(lbl,x+6,y-4);
 }
 
 // ═══════════════════════════════════════════
-//  분석 패널 업데이트
+//  분석 업데이트
 // ═══════════════════════════════════════════
-function updateAnalysis() {
-  const pts = simData.pts;
-  const tTotal = simData.tTotal;
-
-  // 총 변위
-  const totalDisp = simData.segments.reduce((s,seg) => s+seg.disp, 0);
-  // 총 이동거리 (방향전환 고려)
-  let totalDist = 0;
-  segments.forEach(seg => {
-    const tTurn = seg.a !== 0 && seg.v0 !== 0 ? -seg.v0/seg.a : null;
-    if (tTurn !== null && tTurn > 0 && tTurn < seg.dt && seg.v0*(seg.v0+seg.a*seg.dt)<0) {
-      const d1 = Math.abs(seg.v0*tTurn + 0.5*seg.a*tTurn*tTurn);
-      const d2 = Math.abs(seg.disp) - d1 + d1*2; // 총 이동거리 = d1 + (d1 + |disp-(-d1)|)
-      // 더 정확히:
-      const dispFwd = seg.v0*tTurn + 0.5*seg.a*tTurn*tTurn;
-      const dispBck = seg.disp - dispFwd;
-      totalDist += Math.abs(dispFwd) + Math.abs(dispBck);
-    } else {
-      totalDist += Math.abs(seg.disp);
-    }
+function updateAnalysis(){
+  if(!simData) return;
+  const tT=simData.tTotal;
+  const totalDisp=segments.reduce((s,seg)=>s+seg.disp,0);
+  let totalDist=0;
+  segments.forEach(seg=>{
+    if(seg.a!==0&&seg.v0*(seg.v0+seg.a*seg.dt)<0){
+      const tT2=-seg.v0/seg.a;
+      const d1=seg.v0*tT2+0.5*seg.a*tT2*tT2;
+      const d2=seg.disp-d1;
+      totalDist+=Math.abs(d1)+Math.abs(d2);
+    } else { totalDist+=Math.abs(seg.disp); }
   });
-
-  const avgV   = totalDisp / tTotal;
-  const avgSpd = totalDist / tTotal;
-  const vMax   = Math.max(...pts.map(p=>p.v));
-  const vMin2  = Math.min(...pts.map(p=>p.v));
+  const allV=simData.pts.map(p=>p.v);
+  const vMax=Math.max(...allV), vMin=Math.min(...allV);
+  const avgV=totalDisp/tT, avgSpd=totalDist/tT;
 
   // 구간별 변위 바
-  const maxAbsDisp = Math.max(...segments.map(s=>Math.abs(s.disp)), 0.01);
-  const barsEl = document.getElementById('seg-bars');
-  barsEl.innerHTML = '';
-  segments.forEach((seg, si) => {
-    const pct = Math.min(Math.abs(seg.disp)/maxAbsDisp*100, 100);
-    const sign = seg.disp >= 0 ? '+' : '';
-    barsEl.innerHTML += `
+  const maxAbs=Math.max(...segments.map(s=>Math.abs(s.disp)),0.01);
+  const barsEl=document.getElementById('seg-bars');
+  barsEl.innerHTML='';
+  segments.forEach((seg,si)=>{
+    const pct=Math.min(Math.abs(seg.disp)/maxAbs*100,100);
+    const sign=seg.disp>=0?'+':'';
+    barsEl.innerHTML+=`
       <div class="seg-bar-row">
         <div class="seg-bar-label">
-          <span style="color:${SEG_COLORS[si]};font-family:var(--mono);font-size:0.68em">구간 ${si+1}</span>
-          <span style="font-family:var(--mono);font-size:0.68em">${sign}${round2(seg.disp)} m</span>
+          <span style="color:${SC[si]}">구간 ${si+1}</span>
+          <span>${sign}${r2(seg.disp)} m</span>
         </div>
         <div class="seg-bar-track">
-          <div class="seg-bar-fill" style="width:${pct}%;background:${SEG_COLORS[si]}"></div>
+          <div class="seg-bar-fill" style="width:${pct}%;background:${SC[si]}"></div>
         </div>
       </div>`;
   });
 
-  setText('ana-total-t',    round2(tTotal)+' s',   'accent');
-  setText('ana-total-disp', (totalDisp>=0?'+':'')+round2(totalDisp)+' m', totalDisp>=0?'green':'red');
-  setText('ana-total-dist', round2(totalDist)+' m', 'accent');
-  setText('ana-avg-v',      (avgV>=0?'+':'')+round2(avgV)+' m/s', 'yellow');
-  setText('ana-avg-spd',    round2(avgSpd)+' m/s',  'yellow');
-  setText('ana-vmax',       round2(vMax)+' m/s',    'green');
-  setText('ana-vmin',       round2(vMin2)+' m/s',   'red');
+  setV('ana-total-t',    r2(tT)+' s',                            'accent');
+  setV('ana-total-disp', (totalDisp>=0?'+':'')+r2(totalDisp)+' m', totalDisp>=0?'green':'red');
+  setV('ana-total-dist', r2(totalDist)+' m',                     'accent');
+  setV('ana-avg-v',      (avgV>=0?'+':'')+r2(avgV)+' m/s',       'yellow');
+  setV('ana-avg-spd',    r2(avgSpd)+' m/s',                      'yellow');
+  setV('ana-vmax',       r2(vMax)+' m/s',                        'green');
+  setV('ana-vmin',       r2(vMin)+' m/s',                        'red');
 
   // 방향 전환
-  const turnsEl = document.getElementById('ana-turns-wrap');
-  if (simData.turns.length === 0) {
-    turnsEl.innerHTML = `<div class="ana-row"><span class="ana-key">전환 없음</span><span class="ana-val" style="color:var(--sub)">—</span></div>`;
+  const tEl=document.getElementById('ana-turns-wrap');
+  if(simData.turns.length===0){
+    tEl.innerHTML=`<div class="ana-row"><span class="ana-key">전환 없음</span><span class="ana-val sub">—</span></div>`;
   } else {
-    turnsEl.innerHTML = simData.turns.map((tr,i) =>
-      `<div class="ana-row">
-        <span class="ana-key">전환 ${i+1}</span>
-        <span class="ana-val" style="color:var(--red)">t = ${round2(tr.t)} s</span>
+    tEl.innerHTML=simData.turns.map((tr,i)=>`
+      <div class="ana-row">
+        <span class="ana-key">전환 ${i+1} 시각</span>
+        <span class="ana-val" style="color:var(--red)">t = ${r2(tr.t)} s</span>
       </div>
       <div class="ana-row">
-        <span class="ana-key" style="padding-left:8px">위치</span>
-        <span class="ana-val" style="color:var(--sub)">x = ${round2(tr.x)} m</span>
-      </div>`
-    ).join('');
+        <span class="ana-key" style="padding-left:6px">그때 위치</span>
+        <span class="ana-val" style="color:var(--sub)">s = ${r2(tr.x)} m</span>
+      </div>`).join('');
   }
+
+  // 아코디언 높이 갱신
+  ['input','graph','ana'].forEach(key=>{
+    const body=document.getElementById('body-'+key);
+    if(accState[key]) body.style.maxHeight=body.scrollHeight+9999+'px';
+  });
 
   updateQuery();
 }
 
-function setText(id, val, cls) {
-  const el = document.getElementById(id);
-  el.textContent = val;
-  el.className = 'ana-val ' + (cls||'');
+function setV(id,val,cls){
+  const el=document.getElementById(id);
+  el.textContent=val; el.className='ana-val '+(cls||'');
 }
 
 // ═══════════════════════════════════════════
 //  시각 조회
 // ═══════════════════════════════════════════
-function updateQuery() {
-  if (!simData) return;
-  const t = parseFloat(document.getElementById('query-t').value);
-  const el = document.getElementById('query-results');
-  if (isNaN(t) || t < 0 || t > simData.tTotal) {
-    el.innerHTML = `
-      <div class="query-result-row"><span>위치 x</span><span style="color:var(--sub)">범위 초과</span></div>
-      <div class="query-result-row"><span>속도 v</span><span style="color:var(--sub)">—</span></div>
-      <div class="query-result-row"><span>가속도 a</span><span style="color:var(--sub)">—</span></div>`;
+function updateQuery(){
+  if(!simData) return;
+  const t=parseFloat(document.getElementById('query-t').value);
+  const el=document.getElementById('query-results');
+  if(isNaN(t)||t<0||t>simData.tTotal){
+    el.innerHTML=`
+      <div class="ana-row"><span class="ana-key">변위 s</span><span class="ana-val sub">범위 초과</span></div>
+      <div class="ana-row"><span class="ana-key">속도 v</span><span class="ana-val sub">—</span></div>
+      <div class="ana-row"><span class="ana-key">가속도 a</span><span class="ana-val sub">—</span></div>`;
     return;
   }
-  const { x, v, a } = evalAt(t);
-  el.innerHTML = `
-    <div class="query-result-row">
-      <span>위치 x</span>
-      <span style="color:var(--green)">${round2(x)} m</span>
-    </div>
-    <div class="query-result-row">
-      <span>속도 v</span>
-      <span style="color:var(--accent)">${round2(v)} m/s</span>
-    </div>
-    <div class="query-result-row">
-      <span>가속도 a</span>
-      <span style="color:var(--yellow)">${round2(a)} m/s²</span>
-    </div>`;
+  const {x,v,a}=evalAt(t);
+  el.innerHTML=`
+    <div class="ana-row"><span class="ana-key">변위 s</span><span class="ana-val green">${r2(x)} m</span></div>
+    <div class="ana-row"><span class="ana-key">속도 v</span><span class="ana-val accent">${r2(v)} m/s</span></div>
+    <div class="ana-row"><span class="ana-key">가속도 a</span><span class="ana-val yellow">${r2(a)} m/s²</span></div>`;
 }
 
 // ═══════════════════════════════════════════
-//  UI 표시/숨김
+//  초기화
 // ═══════════════════════════════════════════
-function showUI() {
-  document.getElementById('empty-state').style.display = 'none';
-  document.getElementById('graphs-container').style.display = 'flex';
-  document.getElementById('ana-empty').style.display = 'none';
-  document.getElementById('ana-content').style.display = 'flex';
+function resetAll(){
+  ['s1-v0','s1-a','s1-t','s2-a','s2-t','s3-a','s3-t'].forEach(id=>document.getElementById(id).value='');
+  ['s2-v0','s3-v0'].forEach(id=>document.getElementById(id).value='');
+  ['badge-1','badge-2','badge-3'].forEach((id,i)=>document.getElementById(id).textContent=i===0?'0 ~ ? s':'? ~ ? s');
+  document.getElementById('empty-state').style.display='flex';
+  document.getElementById('graphs-container').style.display='none';
+  document.getElementById('ana-empty').style.display='flex';
+  document.getElementById('ana-content').style.display='none';
+  document.getElementById('query-t').value='';
+  simData=null;
+  if(!accState['input']) toggleAcc('input');
 }
 
-function resetAll() {
-  ['s1-v0','s1-a','s1-t','s2-a','s2-t','s3-a','s3-t'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  ['s2-v0','s3-v0'].forEach(id => {
-    document.getElementById(id).value = '';
-    document.getElementById(id).placeholder = '—';
-  });
-  ['time-badge-1','time-badge-2','time-badge-3'].forEach((id,i)=>{
-    document.getElementById(id).textContent = i===0 ? '0 ~ ? s' : '? ~ ? s';
-  });
-  document.getElementById('empty-state').style.display = 'flex';
-  document.getElementById('graphs-container').style.display = 'none';
-  document.getElementById('ana-empty').style.display = 'block';
-  document.getElementById('ana-content').style.display = 'none';
-  document.getElementById('query-t').value = '';
-  simData = null;
-}
+// ── 유틸 ──
+function r2(v){ return Math.round(v*100)/100; }
+function r1(v){ return Math.round(v*10)/10; }
 
-// ═══════════════════════════════════════════
-//  유틸
-// ═══════════════════════════════════════════
-function round2(v) { return Math.round(v*100)/100; }
-function round1(v) { return Math.round(v*10)/10; }
-
-// 윈도우 리사이즈 시 재그리기
-window.addEventListener('resize', () => { if (simData) drawGraphs(); });
+window.addEventListener('resize',()=>{ if(simData) drawGraphs(); });
 </script>
 </body>
 </html>
