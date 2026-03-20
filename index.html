@@ -183,7 +183,7 @@ header h1 em { font-style: normal; color: var(--accent); }
 
 /* 버튼들 */
 .btn-row {
-  display: grid; grid-template-columns: 1fr auto;
+  display: grid; grid-template-columns: 1fr auto auto;
   gap: 8px; padding: 12px 12px 0;
 }
 .btn-run {
@@ -196,11 +196,21 @@ header h1 em { font-style: normal; color: var(--accent); }
   transition: opacity .15s;
 }
 .btn-run:active { opacity: .8; }
+.btn-random {
+  background: var(--surface); color: var(--yellow);
+  border: 1px solid var(--yellow); border-radius: var(--r);
+  padding: 11px 13px;
+  font-family: var(--sans); font-size: 0.82em; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .15s;
+}
+.btn-random:active { background: rgba(255,209,102,.12); }
 .btn-reset {
   background: none; border: 1px solid var(--border2);
   color: var(--sub); border-radius: var(--r);
-  padding: 11px 14px;
-  font-family: var(--sans); font-size: 0.82em;
+  padding: 11px 13px;
+  font-family: var(--sans); font-size: 0.9em;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -420,8 +430,9 @@ canvas { display: block; width: 100%; }
     </div>
 
     <div class="btn-row">
-      <button class="btn-run" onclick="runSim()">▶ 그래프 그리기</button>
-      <button class="btn-reset" onclick="resetAll()">초기화</button>
+      <button class="btn-run" onclick="runSim()">▶ 그리기</button>
+      <button class="btn-random" onclick="loadRandom()">🎲 예제</button>
+      <button class="btn-reset" onclick="resetAll()">↺</button>
     </div>
 
   </div>
@@ -1107,6 +1118,77 @@ function updateQuery(){
     <div class="ana-row"><span class="ana-key">변위 s</span><span class="ana-val green">${r2(x)} m</span></div>
     <div class="ana-row"><span class="ana-key">속도 v</span><span class="ana-val accent">${r2(v)} m/s</span></div>
     <div class="ana-row"><span class="ana-key">가속도 a</span><span class="ana-val yellow">${r2(a)} m/s²</span></div>`;
+}
+
+// ═══════════════════════════════════════════
+//  랜덤 예제 생성
+//  조건: 모든 입력값 정수, 출력(변위·속도) 정수,
+//        물리량 절댓값 ≤ 200
+// ═══════════════════════════════════════════
+function loadRandom() {
+  // 정수 범위 랜덤
+  const ri = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+  // 짝수 범위 랜덤 (0 포함 가능)
+  const re = (min, max) => ri(min, max) * 2;
+
+  // 최대 500회 시도 → 정수 조건 만족하는 조합 탐색
+  for (let tries = 0; tries < 500; tries++) {
+
+    // ── 구간별 파라미터 후보 ──────────────────
+    // v0: 짝수 −10~10 (출발 속도 적당히 작게)
+    const v0 = re(-5, 5);
+
+    // 각 구간 가속도: −4~4 정수 (0 가능, 단 3구간 모두 0이면 재시도)
+    const a1 = ri(-4, 4);
+    const a2 = ri(-4, 4);
+    const a3 = ri(-4, 4);
+    if (a1 === 0 && a2 === 0 && a3 === 0) continue; // 전구간 등속은 제외
+
+    // 각 구간 시간: 2~6 정수
+    const dt1 = ri(2, 6);
+    const dt2 = ri(2, 6);
+    const dt3 = ri(2, 6);
+
+    // ── 연속 속도 계산 ──
+    const v1 = v0 + a1 * dt1;   // 구간2 초속도
+    const v2 = v1 + a2 * dt2;   // 구간3 초속도
+
+    // ── 각 구간 변위 ──
+    const s1 = v0 * dt1 + 0.5 * a1 * dt1 * dt1;
+    const s2 = v1 * dt2 + 0.5 * a2 * dt2 * dt2;
+    const s3 = v2 * dt3 + 0.5 * a3 * dt3 * dt3;
+
+    // ── 정수 조건 검사 ──
+    if (s1 % 1 !== 0 || s2 % 1 !== 0 || s3 % 1 !== 0) continue;
+    if (v1 % 1 !== 0 || v2 % 1 !== 0) continue;
+
+    // ── 크기 조건 (|값| ≤ 200) ──
+    const allVals = [v0, v1, v2, s1, s2, s3, s1+s2+s3];
+    if (allVals.some(v => Math.abs(v) > 200)) continue;
+
+    // ── 조건 통과 → 입력 필드에 적용 ──
+    document.getElementById('s1-v0').value = v0;
+    document.getElementById('s1-a').value  = a1;
+    document.getElementById('s1-t').value  = dt1;
+    document.getElementById('s2-a').value  = a2;
+    document.getElementById('s2-t').value  = dt2;
+    document.getElementById('s3-a').value  = a3;
+    document.getElementById('s3-t').value  = dt3;
+
+    // v0 자동 계산 갱신
+    updateAutoV0();
+    return;
+  }
+
+  // 500회 실패 시 단순 폴백
+  document.getElementById('s1-v0').value = 4;
+  document.getElementById('s1-a').value  = 2;
+  document.getElementById('s1-t').value  = 4;
+  document.getElementById('s2-a').value  = 0;
+  document.getElementById('s2-t').value  = 3;
+  document.getElementById('s3-a').value  = -4;
+  document.getElementById('s3-t').value  = 3;
+  updateAutoV0();
 }
 
 // ═══════════════════════════════════════════
